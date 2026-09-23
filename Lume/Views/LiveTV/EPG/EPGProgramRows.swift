@@ -172,8 +172,9 @@ struct EPGProgramStrip: View, Equatable {
 
     static func canReplay(_ cell: EPGProgramCell, in row: EPGChannelRow, now: Date) -> Bool {
         // Snapshot-based: cell realization runs mid-scroll, where a SwiftData
-        // model read could fault to SQLite on the main thread.
-        !cell.isGap && cell.isPast(at: now) && row.isReplayable(start: cell.start, now: now)
+        // model read could fault to SQLite on the main thread. Past or still
+        // airing — see `EPGProgramCell.isReplayEligible(at:)`.
+        cell.isReplayEligible(at: now) && row.isReplayable(start: cell.start, now: now)
     }
 
     #if os(tvOS)
