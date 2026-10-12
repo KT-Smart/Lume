@@ -12,9 +12,10 @@
 # live package checkouts are deliberately KEPT so no build has to re-download:
 #   ~/Library/Developer/Lume-SharedSPM              — the shared CLI clone
 #   DerivedData/Lume-*/SourcePackages               — Xcode's own clone
-# and `.build/tools` is kept in every checkout because that is what the
-# pre-commit hook runs SwiftFormat and SwiftLint from (rebuilding it costs
-# minutes on the next commit).
+# The main checkout's `.build/tools` and `.build/lefthook` are kept too: every
+# checkout's pre-commit hook runs from them (Scripts/lint-tool.sh), and
+# rebuilding them costs minutes on the next commit. A worktree keeps its own
+# `.build/tools` only when its Package.swift pins different tool versions.
 #
 # Usage:
 #   Scripts/clean-build-cache.sh              # report only, removes nothing
@@ -91,15 +92,20 @@ drop dd "$DD/ModuleCache.noindex" "$DD/SDKStatCaches.noindex" \
         "$DD/CompilationCache.noindex" "$DD/SymbolCache.noindex"
 echo
 
-echo "== .build in the repo and every worktree (keeping .build/tools) =="
+echo "== .build in the repo and every worktree (keeping the hook tools) =="
+MAIN="$(checkouts | head -n1)"
 shopt -s nullglob
 while read -r root; do
   [ -n "$root" ] && [ -d "$root/.build" ] || continue
   for e in "$root"/.build/*; do
     case "$(basename "$e")" in
-      tools|workspace-state.json) ;;
-      *) drop build "$e" ;;
+      workspace-state.json) continue ;;
+      tools | lefthook)
+        [ "$root" = "$MAIN" ] && continue
+        [ "$(basename "$e")" = tools ] && ! cmp -s "$root/Package.swift" "$MAIN/Package.swift" && continue
+        ;;
     esac
+    drop build "$e"
   done
 done < <(checkouts)
 shopt -u nullglob
