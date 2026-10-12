@@ -50,6 +50,8 @@ struct HomeView: View {
     /// Layout › Home). "For You" is gated by `recommendationsEnabled` instead.
     @AppStorage(HomeLayoutSettings.disabledSectionsKey) private var disabledSectionsRaw = ""
     @AppStorage(HomeLayoutSettings.enabledSectionsKey) private var enabledSectionsRaw = ""
+    @AppStorage(HomeLayoutSettings.recentlyWatchedIncludesLiveTVKey)
+    private var recentlyWatchedIncludesLiveTV = HomeLayoutSettings.recentlyWatchedIncludesLiveTVDefault
     /// Bumped by the DEBUG "Recalculate" action in Settings (always 0 otherwise);
     /// part of the task id so the row recomputes on demand.
     @AppStorage(RecommendationSettings.manualRecalculationKey) private var recommendationsRecalcToken = 0
@@ -209,40 +211,40 @@ struct HomeView: View {
             }
             .homeDownloadsDestination()
             #if os(tvOS)
-            .navigationDestination(item: $selectedHero) { hero in
-                if let movie = hero.movie {
-                    MovieDetailView(movie: movie, animationNamespace: animationNamespace)
-                } else if let series = hero.series {
-                    SeriesDetailView(series: series, animationNamespace: animationNamespace)
+                .navigationDestination(item: $selectedHero) { hero in
+                    if let movie = hero.movie {
+                        MovieDetailView(movie: movie, animationNamespace: animationNamespace)
+                    } else if let series = hero.series {
+                        SeriesDetailView(series: series, animationNamespace: animationNamespace)
+                    }
                 }
-            }
             #endif
-            .task(id: trendingKey) {
-                await loadTrending(cacheKey: trendingKey)
-            }
-            .task(id: watchlistKey) {
-                await loadWatchlist(cacheKey: watchlistKey)
-            }
-            .task(id: simklWatchlistKey) {
-                await loadSimklWatchlist(cacheKey: simklWatchlistKey)
-            }
-            .task(id: recommendationsKey) {
-                await loadRecommendations()
-            }
-            .task(id: seriesResumeKey) {
-                await loadSeriesResume()
-            }
-            .task(id: sportsWarmKey) {
-                warmSports()
-            }
+                .task(id: trendingKey) {
+                    await loadTrending(cacheKey: trendingKey)
+                }
+                .task(id: watchlistKey) {
+                    await loadWatchlist(cacheKey: watchlistKey)
+                }
+                .task(id: simklWatchlistKey) {
+                    await loadSimklWatchlist(cacheKey: simklWatchlistKey)
+                }
+                .task(id: recommendationsKey) {
+                    await loadRecommendations()
+                }
+                .task(id: seriesResumeKey) {
+                    await loadSeriesResume()
+                }
+                .task(id: sportsWarmKey) {
+                    warmSports()
+                }
             #if os(iOS) || os(tvOS)
-            .fullScreenCover(item: $playingMedia) { media in
-                FullScreenPlayerView(media: media)
-            }
+                .fullScreenCover(item: $playingMedia) { media in
+                    FullScreenPlayerView(media: media)
+                }
             #endif
             #if os(iOS)
-            .fullScreenCover(item: $multiViewLaunch) { launch in
-                MultiViewScreen(seed: launch.seed)
+                .fullScreenCover(item: $multiViewLaunch) { launch in
+                    MultiViewScreen(seed: launch.seed)
             }
             #endif
             .paywall(isPresented: $showingPaywall, highlight: .multiView)
@@ -371,9 +373,11 @@ struct HomeView: View {
     // MARK: - Derived content
 
     private var recentlyWatched: [HomeMediaItem] {
-        let items = watchedMovies.filter { belongsToActivePlaylist($0.id) }.excludingRestricted(restriction).map(HomeMediaItem.movie)
+        var items = watchedMovies.filter { belongsToActivePlaylist($0.id) }.excludingRestricted(restriction).map(HomeMediaItem.movie)
             + watchedSeries.filter { belongsToActivePlaylist($0.id) }.excludingRestricted(restriction).map(HomeMediaItem.series)
-            + watchedStreams.filter { belongsToActivePlaylist($0.id) }.excludingRestricted(restriction).map(HomeMediaItem.live)
+        if recentlyWatchedIncludesLiveTV {
+            items += watchedStreams.filter { belongsToActivePlaylist($0.id) }.excludingRestricted(restriction).map(HomeMediaItem.live)
+        }
         return items
             .sorted { ($0.lastWatchedDate ?? .distantPast) > ($1.lastWatchedDate ?? .distantPast) }
             .prefix(10)
