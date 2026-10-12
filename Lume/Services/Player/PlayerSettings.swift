@@ -235,10 +235,22 @@ enum PlayerSettings {
         /// the same response also carries the outro window that sets when the
         /// Next Episode button arms, so either toggle being on triggers it.
         static let showSkipIntroButtonKey = "player.showSkipIntroButton"
+        /// Turn an iPhone to landscape, and hold it there, while the player is
+        /// open; portrait again once it closes. iPhone only — see
+        /// `PlayerOrientationLock`. Unrelated to `KSPlayer.autoRotateKey`, which
+        /// rotates the picture by the stream's rotation metadata.
+        static let rotateToLandscapeKey = "player.rotateToLandscape"
 
         static let autoPlayNextDefault = true
         static let showNextEpisodeButtonDefault = true
         static let showSkipIntroButtonDefault = true
+        static let rotateToLandscapeDefault = true
+
+        /// Whether the player turns the iPhone to landscape, read off
+        /// `UserDefaults` directly for the same reason as `showSkipIntroButton`.
+        static var rotateToLandscape: Bool {
+            UserDefaults.standard.bool(rotateToLandscapeKey, default: rotateToLandscapeDefault)
+        }
 
         /// Whether the skip-intro affordance is enabled, read off `UserDefaults`
         /// directly (so the player host needn't hold an `@AppStorage` that would

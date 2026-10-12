@@ -255,6 +255,7 @@ struct FullScreenPlayerView: View {
         #endif
         .persistentSystemOverlays(.hidden)
         .preferredColorScheme(.dark)
+        .playerOrientationLock()
         .macPlayerWindow(activeMedia: activeMedia, launchMedia: media) { switchMedia(to: $0) }
         .playerRecording(for: activeMedia)
         // Synchronous on purpose, and ahead of the `.task` below: the engine
