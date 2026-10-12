@@ -10,21 +10,19 @@ struct LumeEngineSubtitleOverlay: View {
     @ObservedObject var cues: SubtitleCueModel
     /// Lifts the cues above the controls' scrubber while they're showing.
     let controlsVisible: Bool
+    @AppStorage(SubtitleStyle.storageKey) private var style = SubtitleStyle.default
 
     var body: some View {
         if let text = cues.text, !text.isEmpty {
             VStack {
                 Spacer()
                 Text(text)
-                    .font(.title3.weight(.medium))
                     .multilineTextAlignment(.center)
-                    .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.9), radius: 2, x: 0, y: 1)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(.black.opacity(0.45), in: RoundedRectangle(cornerRadius: 8))
+                    .subtitleStyle(style)
+                    .padding(.horizontal)
                     .padding(.bottom, controlsVisible ? 120 : 40)
             }
+            .subtitleLift(style.position)
             .allowsHitTesting(false)
         }
     }

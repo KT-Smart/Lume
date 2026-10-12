@@ -3,7 +3,7 @@
 //  Lume
 //
 //  The iOS / macOS / visionOS Player page — everyday playback options first,
-//  then audio languages, OpenSubtitles, the stream-information caption, and under Advanced the
+//  then audio languages, subtitle style and OpenSubtitles, the stream-information caption, and under Advanced the
 //  engine priority and the external-player hand-off — plus the Engines page
 //  behind it. tvOS builds its own pane in SettingsView+TVPlayer.
 //
@@ -70,8 +70,10 @@
                     Text("Languages")
                 }
 
-                if openSubtitles.isConfigured {
-                    Section {
+                Section {
+                    NavigationLink("Subtitle Style") { SubtitleStyleSettingsView() }
+
+                    if openSubtitles.isConfigured {
                         NavigationLink {
                             OpenSubtitlesIntegrationView()
                         } label: {
@@ -84,9 +86,11 @@
                                 }
                             }
                         }
-                    } header: {
-                        Text("Subtitles")
-                    } footer: {
+                    }
+                } header: {
+                    Text("Subtitles")
+                } footer: {
+                    if openSubtitles.isConfigured {
                         Text("Download subtitles for anything that ships without them.")
                     }
                 }

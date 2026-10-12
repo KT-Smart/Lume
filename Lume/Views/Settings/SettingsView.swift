@@ -110,6 +110,9 @@ struct SettingsView: View {
         /// Whether the Player category is drilled into OpenSubtitles in place.
         /// Not `private`: set by the SettingsView+TVPlayer extension (separate file).
         @State var showingOpenSubtitles = false
+        /// Whether the Player category is drilled into Subtitle Style in place.
+        /// Not `private`: set by the SettingsView+TVPlayer extension (separate file).
+        @State var showingSubtitleStyle = false
         /// Whether the Live TV category is drilled into the Recording Server
         /// pane, in place (same reasoning as `selectedPlaylist`).
         @State private var showingRecordingServer = false
@@ -317,6 +320,7 @@ struct SettingsView: View {
                         showingContentManagement = false
                         showingEngines = false
                         showingOpenSubtitles = false
+                        showingSubtitleStyle = false
                         showingRecordingServer = false
                         recordingServerRoute = nil
                         selectedEngineOptions = nil
@@ -473,6 +477,8 @@ struct SettingsView: View {
                     case .player:
                         if showingOpenSubtitles {
                             TVOpenSubtitlesIntegrationView()
+                        } else if showingSubtitleStyle {
+                            TVSubtitleStyleSettingsView()
                         } else if let selectedEngineOptions {
                             tvEngineOptionsDetail(for: selectedEngineOptions)
                         } else if showingEngines {
