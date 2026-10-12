@@ -33,8 +33,8 @@
             #expect(PlayerOrientationLock.orientations(locked: false, idiom: idiom) == expected)
         }
 
-        @Test func `rotate to landscape is on by default`() {
-            #expect(PlayerSettings.Playback.rotateToLandscapeDefault)
+        @Test func `rotate to landscape is off by default`() {
+            #expect(!PlayerSettings.Playback.rotateToLandscapeDefault)
         }
     }
 #endif

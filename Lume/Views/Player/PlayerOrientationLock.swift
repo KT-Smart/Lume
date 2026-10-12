@@ -47,6 +47,27 @@ import SwiftUI
             apply(requesting: .portrait)
         }
 
+        /// How long the system takes to turn the interface a quarter turn on
+        /// iPhone. UIKit exposes no completion for a geometry request.
+        private static let rotationDuration: Duration = .milliseconds(400)
+
+        /// Lifts the lock ahead of a dismissal and calls `completion` once the
+        /// phone is back in portrait. Releasing from `onDisappear` alone would
+        /// slide the cover away over an app still in landscape and only then
+        /// turn it; rotating the player first means the app is never seen
+        /// sideways. Calls straight through when nothing holds the lock, and
+        /// skips the wait in the background, where nothing animates.
+        static func releaseAll(then completion: @escaping @MainActor () -> Void) {
+            guard !holders.isEmpty else { return completion() }
+            holders.removeAll()
+            apply(requesting: .portrait)
+            guard UIApplication.shared.applicationState == .active else { return completion() }
+            Task {
+                try? await Task.sleep(for: rotationDuration)
+                completion()
+            }
+        }
+
         private static func apply(requesting orientations: UIInterfaceOrientationMask) {
             for scene in UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }) {
                 // Every controller in the presentation chain caches its
@@ -63,6 +84,19 @@ import SwiftUI
         }
     }
 #endif
+
+extension DismissAction {
+    /// Closes a full-screen player. On an iPhone the lock holds in landscape,
+    /// the player turns back to portrait first and the cover goes once it has —
+    /// see `PlayerOrientationLock.releaseAll(then:)`.
+    func dismissPlayer() {
+        #if os(iOS)
+            PlayerOrientationLock.releaseAll { self() }
+        #else
+            self()
+        #endif
+    }
+}
 
 extension View {
     /// Holds `PlayerOrientationLock` for as long as this player is on screen,

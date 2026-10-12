@@ -479,7 +479,7 @@ struct VLCPlayerEngineView: View {
             }
             dismissWindow(id: "player")
         #else
-            dismiss()
+            dismiss.dismissPlayer()
         #endif
     }
 
