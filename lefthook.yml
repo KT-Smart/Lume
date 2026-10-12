@@ -16,16 +16,17 @@ pre-commit:
       stage_fixed: true
 
     # 2. Auto-format staged Swift via the vendored SwiftFormat executable, then re-stage.
-    #    (`swift run` is used instead of the SwiftFormat command plugin, which only
-    #    formats SPM targets — this repo's app lives in Lume.xcodeproj, not SPM targets.)
+    #    (The executable, not the SwiftFormat command plugin, which only formats SPM
+    #    targets — this repo's app lives in Lume.xcodeproj, not SPM targets.)
+    #    Scripts/lint-tool.sh runs the main checkout's build, so worktrees share it.
     swiftformat:
       priority: 2
       glob: "*.swift"
-      run: swift run --build-path .build/tools swiftformat {staged_files}
+      run: Scripts/lint-tool.sh swiftformat {staged_files}
       stage_fixed: true
 
-    # 3. Lint staged Swift via the SwiftLint binary plugin — strict, so warnings block.
+    # 3. Lint staged Swift via the vendored SwiftLint binary — strict, so warnings block.
     swiftlint:
       priority: 3
       glob: "*.swift"
-      run: swift package --build-path .build/tools plugin --allow-writing-to-package-directory swiftlint lint --strict --quiet {staged_files}
+      run: Scripts/lint-tool.sh swiftlint lint --strict --quiet {staged_files}

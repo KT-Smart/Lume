@@ -33,9 +33,10 @@ and dodges the botched-checkout race that breaks multi-platform archiving.
 Delete your `-derivedDataPath` dir when the task is done, or run
 `Scripts/clean-build-cache.sh` (report only; `--apply` to reclaim, `--deep` to
 also drop DeviceSupport, the SwiftPM download cache and idle simulators). It
-deliberately keeps the two live package checkouts and each checkout's
-`.build/tools`, which is what the pre-commit hook runs SwiftFormat/SwiftLint
-from.
+deliberately keeps the two live package checkouts and the main checkout's
+`.build/tools` + `.build/lefthook`, which every worktree's pre-commit hook runs
+from (`Scripts/lint-tool.sh`). New worktrees: `Scripts/worktree.sh` from inside
+the worktree (`--build` to also warm `/tmp/lume-dd-<worktree>`).
 
 ---
 
