@@ -3,7 +3,7 @@
 //  Lume
 //
 //  The tvOS Player settings pane: the premium-gated playback toggles, audio
-//  languages, live-TV surfing, the stream caption, and under Advanced the
+//  languages, subtitles, live-TV surfing, the stream caption, and under Advanced the
 //  Engines drill-in (priority list with reordering, per-engine options) and the
 //  external-player cycle. Split out of SettingsView to keep that file within the project's
 //  line-count cap.
@@ -73,9 +73,10 @@ import SwiftUI
                     tvDrillInRow("Audio Languages") { preferredLanguagePane = .list }
                 }
 
-                if OpenSubtitlesService.shared.isConfigured {
-                    VStack(alignment: .leading, spacing: 8) {
-                        TVSettingsSectionLabel("Subtitles")
+                VStack(alignment: .leading, spacing: 8) {
+                    TVSettingsSectionLabel("Subtitles")
+                    tvDrillInRow("Subtitle Style") { showingSubtitleStyle = true }
+                    if OpenSubtitlesService.shared.isConfigured {
                         tvDrillInRow(label: Text(verbatim: "OpenSubtitles")) { showingOpenSubtitles = true }
                     }
                 }
