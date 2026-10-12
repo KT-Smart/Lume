@@ -17,6 +17,8 @@
         private var autoPlayNext = PlayerSettings.Playback.autoPlayNextDefault
         @AppStorage(PlayerSettings.Playback.showSkipIntroButtonKey)
         private var showSkipIntroButton = PlayerSettings.Playback.showSkipIntroButtonDefault
+        @AppStorage(PlayerSettings.Playback.rotateToLandscapeKey)
+        private var rotateToLandscape = PlayerSettings.Playback.rotateToLandscapeDefault
         @AppStorage(PlayerSettings.StreamInfo.enabledKey)
         private var streamInfoEnabled = PlayerSettings.StreamInfo.enabledDefault
         @AppStorage(PlayerSettings.StreamInfo.detailLevelKey)
@@ -34,15 +36,32 @@
             StreamInfoDetailLevel(rawValue: streamInfoDetailLevelRaw) ?? PlayerSettings.StreamInfo.detailLevelDefault
         }
 
+        /// iPhone only, like the lock itself — see `PlayerOrientationLock`.
+        private var showsRotateToLandscape: Bool {
+            #if os(iOS)
+                UIDevice.current.userInterfaceIdiom == .phone
+            #else
+                false
+            #endif
+        }
+
         var body: some View {
             List {
                 Section {
+                    if showsRotateToLandscape {
+                        Toggle("Rotate to Landscape", isOn: $rotateToLandscape)
+                    }
                     premiumToggle("Autoplay Next Episode", isOn: $autoPlayNext)
                     premiumToggle("Show Skip Intro Button", isOn: $showSkipIntroButton)
                 } header: {
                     Text("Playback")
                 } footer: {
-                    Text("Automatically start the next episode when one finishes.")
+                    VStack(alignment: .leading, spacing: 6) {
+                        if showsRotateToLandscape {
+                            Text("Turns your iPhone to landscape when a video starts, and back to portrait when the player closes.")
+                        }
+                        Text("Automatically start the next episode when one finishes.")
+                    }
                 }
 
                 Section {
