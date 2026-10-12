@@ -90,7 +90,7 @@ extension KSPlayerEngineView {
             }
             dismissWindow(id: "player")
         #else
-            dismiss()
+            dismiss.dismissPlayer()
         #endif
     }
 }

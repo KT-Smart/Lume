@@ -244,7 +244,7 @@ enum PlayerSettings {
         static let autoPlayNextDefault = true
         static let showNextEpisodeButtonDefault = true
         static let showSkipIntroButtonDefault = true
-        static let rotateToLandscapeDefault = true
+        static let rotateToLandscapeDefault = false
 
         /// Whether the player turns the iPhone to landscape, read off
         /// `UserDefaults` directly for the same reason as `showSkipIntroButton`.

@@ -521,7 +521,7 @@ struct FullScreenPlayerView: View {
             }
             dismissWindow(id: "player")
         #else
-            dismiss()
+            dismiss.dismissPlayer()
         #endif
     }
 
