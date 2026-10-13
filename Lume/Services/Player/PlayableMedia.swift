@@ -160,13 +160,10 @@ nonisolated extension PlayableMedia {
 
     static func from(movie: Movie, playlist: Playlist, client: XtreamClient = XtreamClient()) -> PlayableMedia? {
         // Prefer local file for offline/downloaded playback
-        if let path = movie.localFileURL,
-           movie.downloadStatus == .completed,
-           FileManager.default.fileExists(atPath: path)
-        {
+        if let file = movie.downloadedFile {
             return PlayableMedia(
                 id: "movie-\(movie.id)",
-                url: URL(fileURLWithPath: path),
+                url: file,
                 title: movie.name,
                 subtitle: movie.releaseDate,
                 posterURL: URL(string: movie.streamIcon ?? ""),
@@ -208,14 +205,11 @@ nonisolated extension PlayableMedia {
 
     static func from(episode: Episode, playlist: Playlist, client: XtreamClient = XtreamClient()) -> PlayableMedia? {
         // Prefer local file for offline/downloaded playback
-        if let path = episode.localFileURL,
-           episode.downloadStatus == .completed,
-           FileManager.default.fileExists(atPath: path)
-        {
+        if let file = episode.downloadedFile {
             let seriesName = episode.series?.name
             return PlayableMedia(
                 id: "episode-\(episode.id)",
-                url: URL(fileURLWithPath: path),
+                url: file,
                 title: seriesName ?? episode.title,
                 subtitle: "S\(episode.seasonNum) E\(episode.episodeNum) · \(episode.title)",
                 posterURL: URL(string: episode.movieImage ?? ""),
