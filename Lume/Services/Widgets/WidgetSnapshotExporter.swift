@@ -27,20 +27,25 @@ import SwiftData
 #endif
 
 enum WidgetSnapshotExporter {
-    private static let continueWatchingLimit = 10
-    private static let favoritesLimit = 12
-    private static let onNowLimit = 8
+    /// Every list holds as many items as the largest Top Shelf section can
+    /// show; the widgets take fewer.
+    private static let continueWatchingLimit = TopShelfConfiguration.maxItemsPerSection
+    private static let favoritesLimit = TopShelfConfiguration.maxItemsPerSection
+    private static let onNowLimit = TopShelfConfiguration.maxItemsPerSection
 
     /// Exports a fresh snapshot for the active playlist/profile and tells the
     /// system to re-read it: widget timelines on iOS, the Top Shelf on tvOS.
     nonisolated static func export(container: ModelContainer, isChildProfile: Bool, now: Date = Date()) {
         let storedID = UserDefaults.standard.string(forKey: PlaylistSelectionStore.key) ?? ""
-        let snapshot = makeSnapshot(
+        var snapshot = makeSnapshot(
             container: container,
             storedPlaylistID: storedID,
             isChildProfile: isChildProfile,
             now: now
         )
+        #if os(tvOS)
+            snapshot.topShelf = TopShelfSettings.configuration()
+        #endif
         do {
             try WidgetDataStore.save(snapshot)
         } catch {
@@ -140,6 +145,7 @@ enum WidgetSnapshotExporter {
                 title: movie.name,
                 subtitle: movie.releaseDate,
                 imageURL: URL(string: movie.streamIcon ?? ""),
+                backdropURL: TMDBClient.backdropURL(movie.backdropPath),
                 progress: progress,
                 deepLink: deepLink
             )))
@@ -186,6 +192,7 @@ enum WidgetSnapshotExporter {
             title: show.name,
             subtitle: "S\(episode.seasonNum) E\(episode.episodeNum) · \(episode.title)",
             imageURL: URL(string: show.cover ?? episode.movieImage ?? ""),
+            backdropURL: TMDBClient.backdropURL(show.backdropPath),
             progress: progress,
             deepLink: deepLink
         ))
@@ -211,6 +218,7 @@ enum WidgetSnapshotExporter {
                 title: movie.name,
                 subtitle: nil,
                 imageURL: URL(string: movie.streamIcon ?? ""),
+                backdropURL: TMDBClient.backdropURL(movie.backdropPath),
                 progress: nil,
                 deepLink: deepLink
             )))
@@ -225,6 +233,7 @@ enum WidgetSnapshotExporter {
                 title: show.name,
                 subtitle: nil,
                 imageURL: URL(string: show.cover ?? ""),
+                backdropURL: TMDBClient.backdropURL(show.backdropPath),
                 progress: nil,
                 deepLink: deepLink
             )))

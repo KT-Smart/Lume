@@ -89,6 +89,7 @@ struct WidgetSnapshotExporterTests {
         resumable.durationSecs = 3600
         resumable.watchProgress = 900
         resumable.lastWatchedDate = Date(timeIntervalSinceNow: -3600)
+        resumable.backdropPath = "/m1-backdrop.jpg"
         context.insert(resumable)
 
         let watched = Movie(id: "\(prefix)-m2", streamId: 2, name: "Watched")
@@ -143,6 +144,7 @@ struct WidgetSnapshotExporterTests {
         #expect(episode.progress == 0.5)
         let movie = try #require(snapshot.continueWatching.last)
         #expect(movie.title == "Resumable")
+        #expect(movie.backdropURL == TMDBClient.backdropURL("/m1-backdrop.jpg"))
         #expect(movie.progress == 0.25)
         // The fully-watched movie must not resurface.
         #expect(!snapshot.continueWatching.contains { $0.title == "Watched" })

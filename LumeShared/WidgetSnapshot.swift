@@ -19,6 +19,9 @@ nonisolated struct WidgetSnapshot: Codable, Equatable {
     var continueWatching: [WidgetMediaItem]
     var favorites: [WidgetMediaItem]
     var onNow: [WidgetChannelNow]
+    /// How the tvOS Top Shelf presents this snapshot. Only the tvOS app writes
+    /// it; absent (an older snapshot, or iOS), the Top Shelf uses the default.
+    var topShelf: TopShelfConfiguration?
 
     static let empty = WidgetSnapshot(
         generatedAt: .distantPast,
@@ -43,6 +46,8 @@ nonisolated struct WidgetMediaItem: Codable, Equatable, Identifiable {
     var title: String
     var subtitle: String?
     var imageURL: URL?
+    /// Landscape artwork for the Top Shelf carousel, when the title has one.
+    var backdropURL: URL?
     /// Resume fraction (0...1) for partially-watched items, nil otherwise.
     var progress: Double?
     var deepLink: URL

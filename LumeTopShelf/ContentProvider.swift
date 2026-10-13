@@ -3,10 +3,11 @@
 //  LumeTopShelf
 //
 //  The tvOS Top Shelf — the marquee row above the app icon on the Apple TV
-//  home screen. Mirrors the widgets: Continue Watching, Favorites and On Now
-//  sections from the shared snapshot the app exports. Selecting an item
-//  deep-links into the app via `lume://`; the system fetches artwork itself
-//  from the URLs we hand it.
+//  home screen. Mirrors the widgets: Continue Watching, On Now and Favorites
+//  from the shared snapshot the app exports, shown, ordered and sized the way
+//  the user set it up in Settings › Home (`TopShelfConfiguration`). Selecting
+//  an item deep-links into the app via `lume://`; the system fetches artwork
+//  itself from the URLs we hand it.
 //
 
 import Foundation
@@ -18,61 +19,144 @@ final class ContentProvider: TVTopShelfContentProvider {
             completionHandler(nil)
             return
         }
-
-        var sections: [TVTopShelfItemCollection<TVTopShelfSectionedItem>] = []
-
-        let continueWatching = snapshot.continueWatching.prefix(10).compactMap(mediaItem)
-        if !continueWatching.isEmpty {
-            let section = TVTopShelfItemCollection(items: continueWatching)
-            section.title = String(localized: "Continue Watching", comment: "Top Shelf section")
-            sections.append(section)
+        let configuration = snapshot.topShelf ?? .default
+        let sections = configuration.isEnabled
+            ? TopShelfSection.build(from: snapshot, configuration: configuration)
+            : []
+        // Switched off, or nothing to show: tvOS falls back to the app's static
+        // Top Shelf image.
+        guard !sections.isEmpty else {
+            completionHandler(nil)
+            return
         }
-
-        let onNow = snapshot.onNow.prefix(10).compactMap(channelItem)
-        if !onNow.isEmpty {
-            let section = TVTopShelfItemCollection(items: onNow)
-            section.title = String(localized: "On Now", comment: "Top Shelf section")
-            sections.append(section)
+        switch configuration.style {
+        case .sectioned:
+            completionHandler(TVTopShelfSectionedContent(sections: sections.map(\.sectionedCollection)))
+        case .carousel:
+            let items = TopShelfSection.carouselItems(sections)
+            completionHandler(items.isEmpty ? nil : TVTopShelfCarouselContent(style: .details, items: items))
         }
+    }
+}
 
-        let favorites = snapshot.favorites.prefix(10).compactMap(mediaItem)
-        if !favorites.isEmpty {
-            let section = TVTopShelfItemCollection(items: favorites)
-            section.title = String(localized: "Favorites", comment: "Top Shelf section")
-            sections.append(section)
-        }
+/// One configured section's entries, ready to become either layout's items.
+private struct TopShelfSection {
+    let kind: TopShelfConfiguration.Section
+    let entries: [Entry]
 
-        completionHandler(sections.isEmpty ? nil : TVTopShelfSectionedContent(sections: sections))
+    /// A single Top Shelf entry, from either a title or a channel.
+    struct Entry {
+        let id: String
+        let title: String
+        let summary: String?
+        let posterURL: URL?
+        let backdropURL: URL?
+        let isChannel: Bool
+        let progress: Double?
+        let deepLink: URL
     }
 
-    private func mediaItem(_ media: WidgetMediaItem) -> TVTopShelfSectionedItem? {
-        let item = TVTopShelfSectionedItem(identifier: media.id)
-        item.title = media.title
-        item.imageShape = media.kind == .live ? .square : .poster
-        if let imageURL = media.imageURL {
-            item.setImageURL(imageURL, for: [.screenScale1x, .screenScale2x])
+    var title: String {
+        switch kind {
+        case .continueWatching: String(localized: "Continue Watching", comment: "Top Shelf section")
+        case .onNow: String(localized: "On Now", comment: "Top Shelf section")
+        case .favorites: String(localized: "Favorites", comment: "Top Shelf section")
         }
-        if let progress = media.progress {
+    }
+
+    /// The configured sections in order, each capped at the chosen size;
+    /// empty sections are left out.
+    static func build(from snapshot: WidgetSnapshot, configuration: TopShelfConfiguration) -> [TopShelfSection] {
+        configuration.sections.compactMap { kind in
+            let entries: [Entry] = switch kind {
+            case .continueWatching: snapshot.continueWatching.map(Entry.init(media:))
+            case .onNow: snapshot.onNow.map(Entry.init(channel:))
+            case .favorites: snapshot.favorites.map(Entry.init(media:))
+            }
+            let capped = Array(entries.prefix(configuration.itemsPerSection))
+            return capped.isEmpty ? nil : TopShelfSection(kind: kind, entries: capped)
+        }
+    }
+
+    var sectionedCollection: TVTopShelfItemCollection<TVTopShelfSectionedItem> {
+        // Identifiers are scoped to the section: a favorite that's also in
+        // progress appears in both rows.
+        let collection = TVTopShelfItemCollection(items: entries.map { $0.sectionedItem(identifier: "\(kind.rawValue)-\($0.id)") })
+        collection.title = title
+        return collection
+    }
+
+    /// The carousel is one flat list: the sections in order, each item labelled
+    /// with its section, and a title that appears in two sections (a favorite
+    /// that's also in progress) shown once. Channels are left out — a logo is
+    /// all the art they have, and it can't fill a full-screen backdrop — so On
+    /// Now and favorite channels show only in the sectioned layout.
+    static func carouselItems(_ sections: [TopShelfSection]) -> [TVTopShelfCarouselItem] {
+        var seen = Set<String>()
+        return sections.flatMap { section in
+            section.entries
+                .filter { !$0.isChannel && seen.insert($0.id).inserted }
+                .map { $0.carouselItem(contextTitle: section.title) }
+        }
+    }
+}
+
+private extension TopShelfSection.Entry {
+    init(media: WidgetMediaItem) {
+        self.init(
+            id: media.id,
+            title: media.title,
+            summary: media.subtitle,
+            posterURL: media.imageURL,
+            backdropURL: media.backdropURL,
+            isChannel: media.kind == .live,
+            progress: media.progress,
+            deepLink: media.deepLink
+        )
+    }
+
+    init(channel: WidgetChannelNow) {
+        self.init(
+            id: "live-\(channel.id)",
+            title: channel.channelName,
+            summary: channel.nowTitle,
+            posterURL: channel.logoURL,
+            backdropURL: nil,
+            isChannel: true,
+            progress: nil,
+            deepLink: channel.deepLink
+        )
+    }
+
+    func sectionedItem(identifier: String) -> TVTopShelfSectionedItem {
+        let item = TVTopShelfSectionedItem(identifier: identifier)
+        // A channel with guide data reads "News 24 — Evening News".
+        item.title = isChannel ? [title, summary].compactMap(\.self).joined(separator: " — ") : title
+        item.imageShape = isChannel ? .square : .poster
+        if let posterURL {
+            item.setImageURL(posterURL, for: [.screenScale1x, .screenScale2x])
+        }
+        if let progress {
             item.playbackProgress = progress
         }
-        item.displayAction = TVTopShelfAction(url: media.deepLink)
-        item.playAction = TVTopShelfAction(url: media.deepLink)
+        item.displayAction = TVTopShelfAction(url: deepLink)
+        item.playAction = TVTopShelfAction(url: deepLink)
         return item
     }
 
-    private func channelItem(_ channel: WidgetChannelNow) -> TVTopShelfSectionedItem? {
-        let item = TVTopShelfSectionedItem(identifier: channel.id)
-        if let nowTitle = channel.nowTitle {
-            item.title = "\(channel.channelName) — \(nowTitle)"
-        } else {
-            item.title = channel.channelName
+    func carouselItem(contextTitle: String) -> TVTopShelfCarouselItem {
+        let item = TVTopShelfCarouselItem(identifier: id)
+        item.title = title
+        item.contextTitle = contextTitle
+        item.summary = summary
+        // Landscape art fills the carousel; a poster or logo is the fallback.
+        if let imageURL = backdropURL ?? posterURL {
+            item.setImageURL(imageURL, for: [.screenScale1x, .screenScale2x])
         }
-        item.imageShape = .square
-        if let logoURL = channel.logoURL {
-            item.setImageURL(logoURL, for: [.screenScale1x, .screenScale2x])
-        }
-        item.displayAction = TVTopShelfAction(url: channel.deepLink)
-        item.playAction = TVTopShelfAction(url: channel.deepLink)
+        // Carousel items have no progress bar (`playbackProgress` is a
+        // sectioned-item property), so resume state shows only in Rows.
+        item.displayAction = TVTopShelfAction(url: deepLink)
+        item.playAction = TVTopShelfAction(url: deepLink)
         return item
     }
 }
