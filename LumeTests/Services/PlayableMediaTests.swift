@@ -159,6 +159,16 @@ struct PlayableMediaTests {
         #expect(PlayableMedia.isCatchupAvailable(stream: stream, start: start, now: now))
     }
 
+    /// Only the programme's start is checked against the window, so the one
+    /// on air is as available as a finished one — what Watch from Start needs.
+    @Test func `catchup availability for a programme currently airing`() {
+        let stream = LiveStream(id: "l-6b", streamId: 303, name: "Archive",
+                                tvArchive: 1, tvArchiveDuration: 7)
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        let start = now.addingTimeInterval(-15 * 60) // started 15 minutes ago, still airing
+        #expect(PlayableMedia.isCatchupAvailable(stream: stream, start: start, now: now))
+    }
+
     @Test func `catchup availability rejects start beyond archive window`() {
         let stream = LiveStream(id: "l-7", streamId: 304, name: "Archive",
                                 tvArchive: 1, tvArchiveDuration: 7)
