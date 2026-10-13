@@ -164,6 +164,7 @@ struct EPGGridScroller: View {
             scrollRequest: scrollRequest,
             virtualFocus: gridVirtualFocus,
             onPlay: { row, cell in playCell(row, cell) },
+            onWatchFromStart: { row, cell in onPlayCatchup(row.stream, cell) },
             onShowDetails: { row, cell in
                 selection = EPGSelection(id: cell.id, stream: row.stream, cell: cell)
             }

@@ -144,7 +144,7 @@ struct EPGGridBuilderTests {
         #expect(Set(cells.map(\.id)).count == cells.count)
     }
 
-    // MARK: - Replay eligibility
+    // MARK: - Replay actions
 
     private static func programCell(
         startMinutes: Double, endMinutes: Double, isGap: Bool = false
@@ -157,34 +157,51 @@ struct EPGGridBuilderTests {
         )
     }
 
-    /// The gate that lets the EPG detail sheet and the grid's replay glyph
-    /// offer catch-up for a programme still airing, not just a finished one —
-    /// the archive-window check itself (`PlayableMedia.isCatchupAvailable`,
-    /// `EPGChannelRow.isReplayable`) never cared about past vs. live.
-    @Test func `a currently airing programme is replay eligible`() {
-        let now = Self.windowStart.addingTimeInterval(45 * 60)
-        let cell = Self.programCell(startMinutes: 30, endMinutes: 60)
-        #expect(cell.isLive(at: now))
-        #expect(cell.isReplayEligible(at: now))
+    @MainActor
+    private static func archiveRow(_ cell: EPGProgramCell) -> EPGChannelRow {
+        EPGChannelRow(
+            id: "c", stream: LiveStream(id: "c", streamId: 1, name: "Archive", tvArchive: 1, tvArchiveDuration: 7),
+            name: "Archive", logoURL: nil, catchupCapable: true, archiveDays: 7, cells: [cell]
+        )
     }
 
-    @Test func `a finished programme is replay eligible`() {
+    /// The programme on air restarts from the archive, but its tile is not
+    /// marked replayable: that flag also makes a tap replay, and a tap on the
+    /// programme on air joins live.
+    @MainActor
+    @Test func `the programme on air can watch from start without being replayable`() {
+        let now = Self.windowStart.addingTimeInterval(45 * 60)
+        let cell = Self.programCell(startMinutes: 30, endMinutes: 60)
+        let row = Self.archiveRow(cell)
+        #expect(EPGProgramStrip.canWatchFromStart(cell, in: row, now: now))
+        #expect(!EPGProgramStrip.canReplay(cell, in: row, now: now))
+    }
+
+    @MainActor
+    @Test func `a finished programme replays instead of watching from start`() {
         let now = Self.windowStart.addingTimeInterval(90 * 60)
         let cell = Self.programCell(startMinutes: 30, endMinutes: 60)
-        #expect(cell.isPast(at: now))
-        #expect(cell.isReplayEligible(at: now))
+        let row = Self.archiveRow(cell)
+        #expect(EPGProgramStrip.canReplay(cell, in: row, now: now))
+        #expect(!EPGProgramStrip.canWatchFromStart(cell, in: row, now: now))
     }
 
-    @Test func `an upcoming programme is not replay eligible`() {
-        let now = Self.windowStart
-        let cell = Self.programCell(startMinutes: 30, endMinutes: 60)
-        #expect(!cell.isLive(at: now) && !cell.isPast(at: now))
-        #expect(!cell.isReplayEligible(at: now))
-    }
+    @MainActor
+    @Test func `upcoming programmes and gaps offer no catch-up`() {
+        let upcoming = Self.programCell(startMinutes: 30, endMinutes: 60)
+        #expect(!EPGProgramStrip.canWatchFromStart(upcoming, in: Self.archiveRow(upcoming), now: Self.windowStart))
 
-    @Test func `a gap filler is never replay eligible`() {
+        let gap = Self.programCell(startMinutes: 30, endMinutes: 60, isGap: true)
         let now = Self.windowStart.addingTimeInterval(45 * 60)
-        let cell = Self.programCell(startMinutes: 30, endMinutes: 60, isGap: true)
-        #expect(!cell.isReplayEligible(at: now))
+        #expect(!EPGProgramStrip.canWatchFromStart(gap, in: Self.archiveRow(gap), now: now))
+    }
+
+    /// A programme that began before the archive reaches back can't restart.
+    @MainActor
+    @Test func `the programme on air cannot watch from start past the archive window`() {
+        let cell = Self.programCell(startMinutes: 30, endMinutes: 9 * 24 * 60)
+        let now = Self.windowStart.addingTimeInterval(8 * 24 * 3600)
+        #expect(cell.isLive(at: now))
+        #expect(!EPGProgramStrip.canWatchFromStart(cell, in: Self.archiveRow(cell), now: now))
     }
 }

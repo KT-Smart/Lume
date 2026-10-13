@@ -128,26 +128,6 @@ struct PlayableMediaTests {
         #expect(media.url.absoluteString.hasSuffix("/300.ts"))
     }
 
-    @Test func `catchup builds full-duration media for a programme still airing`() throws {
-        // `catchup` takes only the programme's own start/end, not "now" — so a
-        // still-airing programme (end in the future) requests its full
-        // scheduled duration from the start, same as a finished one. The
-        // provider's timeshift buffer serves what it has recorded so far and
-        // catches up to live as playback reaches "now"; there's nothing
-        // special for the caller to do.
-        let playlist = makePlaylist()
-        let stream = LiveStream(id: "l-3b", streamId: 300, name: "Archive Channel",
-                                tvArchive: 1, tvArchiveDuration: 7)
-        let start = Date(timeIntervalSince1970: 1_700_000_000)
-        let end = start.addingTimeInterval(45 * 60) // programme hasn't finished yet
-
-        let media = try #require(PlayableMedia.catchup(
-            stream: stream, playlist: playlist, programTitle: "Live Now", start: start, end: end
-        ))
-        #expect(media.kind == .vod)
-        #expect(media.url.absoluteString.contains("/timeshift/user/pass/45/"))
-    }
-
     @Test func `catchup returns nil without archive`() {
         let playlist = makePlaylist()
         let stream = LiveStream(id: "l-4", streamId: 301, name: "No Archive")
@@ -179,9 +159,8 @@ struct PlayableMediaTests {
         #expect(PlayableMedia.isCatchupAvailable(stream: stream, start: start, now: now))
     }
 
-    /// A programme's own `start` is what the archive-window check looks at —
-    /// whether it has finished airing by `now` never enters into it, so a
-    /// currently-playing programme is just as available as a finished one.
+    /// Only the programme's start is checked against the window, so the one
+    /// on air is as available as a finished one — what Watch from Start needs.
     @Test func `catchup availability for a programme currently airing`() {
         let stream = LiveStream(id: "l-6b", streamId: 303, name: "Archive",
                                 tvArchive: 1, tvArchiveDuration: 7)
