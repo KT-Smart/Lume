@@ -224,6 +224,25 @@ struct LumeApp: App {
     /// they force dark themselves.
     @AppStorage(AppAppearance.storageKey) private var appearanceRaw = AppAppearance.defaultValue.rawValue
 
+    /// Rebuilds the shared widget / Top Shelf snapshot off the main actor. Cheap
+    /// enough to run on every launch and backgrounding: a handful of bounded
+    /// fetches. Held under a background-task assertion so a backgrounding
+    /// export finishes instead of being suspended mid-write. A no-op on macOS
+    /// and visionOS, which ship no extension to read it.
+    private func exportWidgetSnapshot() {
+        #if os(iOS) || os(tvOS)
+            let container = catalogContainer
+            let isChild = profileManager.activeProfileIsChild
+            Task {
+                await BackgroundActivity.perform("Widget snapshot") {
+                    await Task.detached(priority: .utility) {
+                        WidgetSnapshotExporter.export(container: container, isChildProfile: isChild)
+                    }.value
+                }
+            }
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -334,6 +353,10 @@ struct LumeApp: App {
                     // nothing is pending (see `EPGRefreshGate`).
                     EPGSyncService.shared.configure(container: catalogContainer)
                     EPGSyncService.shared.syncIfDue()
+
+                    // Seed the widget / Top Shelf snapshot once services are up
+                    // (after profile bootstrap, so the catalog is profile-scoped).
+                    exportWidgetSnapshot()
                 }
                 .onChange(of: cloudSync.status.lastReconcile) {
                     // A reconcile may have pulled a PIN this device didn't have
@@ -364,6 +387,11 @@ struct LumeApp: App {
                             ImageMemoryCache.shared.purge(reason: "app backgrounded")
                         }
                     #endif
+                    // Leaving the foreground is the natural refresh point for
+                    // widgets: progress/favorites changed while the app was open.
+                    if phase == .background {
+                        exportWidgetSnapshot()
+                    }
                 }
                 .appAppearance(AppAppearance.resolve(appearanceRaw))
         }
