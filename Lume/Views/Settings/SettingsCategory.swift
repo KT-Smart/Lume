@@ -102,8 +102,8 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
     }
 }
 
-/// The groups the root list is split into. tvOS separates them with spacing
-/// only.
+/// The groups the iOS / macOS root list is split into. The tvOS rail lists
+/// the categories ungrouped.
 enum SettingsCategoryGroup: CaseIterable {
     case account, content, experience, playback, sync, system
 

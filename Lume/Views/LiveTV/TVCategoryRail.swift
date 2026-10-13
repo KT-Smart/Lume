@@ -24,7 +24,7 @@
         @Environment(TVLiveTVFocusRegions.self) private var focusRegions: TVLiveTVFocusRegions?
 
         var body: some View {
-            TVSidebarRail(groups: [items], selectedID: selectedID) { isFocused in
+            TVSidebarRail(items: items, selectedID: selectedID) { isFocused in
                 if let focusRegions, focusRegions.railFocused != isFocused {
                     focusRegions.railFocused = isFocused
                 }

@@ -77,6 +77,9 @@ struct SettingsView: View {
         /// Bumped to hand focus to the rail's selected category — Menu from a
         /// pane's top level, or the tab-bar entry catcher.
         @State private var railFocusRequest = 0
+        /// Bumped as activating a category sends focus into its pane, so the
+        /// rail keeps it should the pane have nothing to focus (iCloud, About).
+        @State private var paneFocusRequest = 0
         /// Whether focus is settled in the rail, for the tab-bar entry catcher.
         @State private var railFocused = false
         /// The playlist drilled into within the Playlists category. When set, its
@@ -289,10 +292,10 @@ struct SettingsView: View {
             NavigationStack {
                 HStack(alignment: .top, spacing: TVSidebarRail.paneSpacing) {
                     TVSidebarRail(
-                        groups: railGroups,
+                        items: railItems,
                         selectedID: selectedCategory.id,
-                        groupSpacing: 12,
                         focusRequest: railFocusRequest,
+                        focusHandOffRequest: paneFocusRequest,
                         masksFocus: paneHandoff != nil,
                         onFocusChange: railFocusDidChange
                     )
@@ -312,14 +315,12 @@ struct SettingsView: View {
             }
         }
 
-        /// The sidebar, grouped like the iOS root list and set apart by
-        /// spacing alone; no headers or icons, like the Apple TV Settings app.
-        private var railGroups: [[TVSidebarRailItem]] {
-            SettingsCategory.grouped(hasConnectedServices: hasConnectedServices).map { entry in
-                entry.categories.map { category in
-                    TVSidebarRailItem(id: category.id, title: Text(category.title)) {
-                        activate(category)
-                    }
+        /// The categories in the iOS root list's order, as one ungrouped list
+        /// without icons.
+        private var railItems: [TVSidebarRailItem] {
+            SettingsCategory.visible(hasConnectedServices: hasConnectedServices).map { category in
+                TVSidebarRailItem(id: category.id, title: Text(category.title)) {
+                    activate(category)
                 }
             }
         }
@@ -329,6 +330,7 @@ struct SettingsView: View {
         private func activate(_ category: SettingsCategory) {
             selectedCategory = category
             closeDrillIns()
+            paneFocusRequest += 1
             // Deferred: the pane only holds the new category's rows a render
             // later.
             Task { @MainActor in detailFocused = true }
@@ -555,7 +557,9 @@ struct SettingsView: View {
                         EmptyView() // not offered on tvOS
                     }
                 }
-                .tvSettingsPaneContent()
+                // Lume Pro lays its benefits out in two columns across the
+                // whole pane.
+                .tvSettingsPaneContent(maxWidth: selectedCategory == .premium ? .infinity : TVSettingsMetrics.detailMaxWidth)
             }
             // A fresh scroll position per category; sub-pages keep theirs.
             .id(selectedCategory)

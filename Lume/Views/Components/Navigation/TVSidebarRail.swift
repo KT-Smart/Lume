@@ -26,15 +26,18 @@
         /// The gap between the rail and the pane beside it.
         static let paneSpacing: CGFloat = 32
 
-        /// The rows in focus order, a group per inner array.
-        let groups: [[TVSidebarRailItem]]
+        /// The rows, in focus order.
+        let items: [TVSidebarRailItem]
         /// The row that reads as selected, and the one entry snaps to.
         let selectedID: String?
-        /// The gap between groups, on top of the rows' own spacing.
-        var groupSpacing: CGFloat = 0
         /// Bumped to move focus onto the selected row from outside the rail —
         /// Menu from the content pane, or an entry catcher.
         var focusRequest = 0
+        /// Bumped as the screen sends focus from a row into its pane. A pane
+        /// with nothing focusable refuses it, and the engine then drops focus
+        /// on some other row (the first); treated as an entry, that landing is
+        /// masked and snapped back to the selected row.
+        var focusHandOffRequest = 0
         /// Draws every row unfocused and leaves focus where it lands — for
         /// focus only passing through the rail on its way into the pane.
         var masksFocus = false
@@ -51,6 +54,11 @@
         /// without the pre-armed mask the wrong row flashes fully styled for
         /// that first frame.
         @State private var railOwnsFocus = false
+        /// Set by `focusHandOffRequest` until focus has left or the pane has
+        /// had its chance. Meanwhile the selected row keeps its focused look
+        /// while focus is anywhere in the rail, so a refused hand-off's detour
+        /// to another row doesn't blink it.
+        @State private var handOffPending = false
         /// The pending "focus left the rail" verdict, cancelled when focus
         /// lands on a row again before it runs.
         @State private var exitCheck: Task<Void, Never>?
@@ -64,7 +72,7 @@
         }
 
         private var itemIDs: [String] {
-            groups.flatMap { $0.map(\.id) }
+            items.map(\.id)
         }
 
         var body: some View {
@@ -104,6 +112,20 @@
             .onChange(of: focusRequest) { _, _ in
                 focusSelection(proxy)
             }
+            .onChange(of: focusHandOffRequest) { _, _ in
+                railOwnsFocus = false
+                handOffPending = true
+                // Focus still here once the pane has had its chance means it
+                // stayed on the selected row: the rail owns it again, so moves
+                // within it aren't snapped back as entries.
+                Task { @MainActor in
+                    try? await Task.sleep(for: .milliseconds(300))
+                    handOffPending = false
+                    if focused != nil, !railOwnsFocus {
+                        railOwnsFocus = true
+                    }
+                }
+            }
             .onChange(of: focused) { _, newValue in
                 focusDidChange(to: newValue, proxy: proxy)
             }
@@ -112,6 +134,7 @@
         private func focusDidChange(to newValue: String?, proxy: ScrollViewProxy) {
             exitCheck?.cancel()
             guard let newValue else {
+                handOffPending = false
                 // A move onto a row the lazy list only just built passes
                 // through nil — for several frames while the list is swiped
                 // through fast, so a single turn isn't enough: read as an
@@ -166,15 +189,8 @@
         }
 
         private var rows: some View {
-            ForEach(Array(groups.enumerated()), id: \.offset) { index, group in
-                if index > 0, groupSpacing > 0 {
-                    Color.clear
-                        .frame(height: groupSpacing)
-                        .accessibilityHidden(true)
-                }
-                ForEach(group) { item in
-                    railButton(item)
-                }
+            ForEach(items) { item in
+                railButton(item)
             }
         }
 
@@ -183,7 +199,8 @@
             // The selected row is exempt: when entry lands there directly, it
             // should read as focused from the first frame.
             let suppressed = masksFocus || (!railOwnsFocus && !isSelected)
-            let isItemFocused = focused == item.id && !suppressed
+            let isItemFocused = (focused == item.id && !suppressed)
+                || (handOffPending && isSelected && focused != nil)
             let rowShape = RoundedRectangle(cornerRadius: 18, style: .continuous)
             return Button(action: item.action) {
                 // Labels start flush at the row's edge; an icon trails, so

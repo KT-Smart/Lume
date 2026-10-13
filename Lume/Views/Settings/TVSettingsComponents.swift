@@ -40,8 +40,8 @@
 
         /// Frames a Settings pane's content beside the rail: its top level
         /// with the rail's first row, room below the last to scroll it clear.
-        func tvSettingsPaneContent() -> some View {
-            frame(maxWidth: TVSettingsMetrics.detailMaxWidth, alignment: .leading)
+        func tvSettingsPaneContent(maxWidth: CGFloat = TVSettingsMetrics.detailMaxWidth) -> some View {
+            frame(maxWidth: maxWidth, alignment: .leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, 16)
                 .padding(.bottom, 72)
