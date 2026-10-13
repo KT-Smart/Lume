@@ -35,6 +35,15 @@ struct EPGProgramDetailView: View {
             && PlayableMedia.isCatchupAvailable(stream: stream, start: cell.start, now: now)
     }
 
+    @ViewBuilder
+    private var catchupLabel: some View {
+        if let days = PlayableMedia.archiveBadgeDays(for: stream) {
+            Label("Catch-up available for \(days) days", systemImage: "clock.arrow.circlepath")
+        } else {
+            Label("Catch-up available", systemImage: "clock.arrow.circlepath")
+        }
+    }
+
     var body: some View {
         #if os(tvOS)
             tvBody
@@ -77,8 +86,8 @@ struct EPGProgramDetailView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
 
-                        if stream.tvArchive > 0 {
-                            Label("Catch-up available for \(stream.tvArchiveDuration) days", systemImage: "clock.arrow.circlepath")
+                        if PlayableMedia.isCatchupCapable(stream: stream) {
+                            catchupLabel
                                 .font(.subheadline)
                                 .foregroundStyle(.blue)
                         }
@@ -139,8 +148,8 @@ struct EPGProgramDetailView: View {
                                 .frame(maxWidth: 520)
                         }
 
-                        if stream.tvArchive > 0 {
-                            Label("Catch-up available for \(stream.tvArchiveDuration) days", systemImage: "clock.arrow.circlepath")
+                        if PlayableMedia.isCatchupCapable(stream: stream) {
+                            catchupLabel
                                 .font(.system(size: 26))
                                 .foregroundStyle(.blue)
                         }
