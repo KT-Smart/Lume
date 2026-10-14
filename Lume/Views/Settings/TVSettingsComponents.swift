@@ -24,7 +24,7 @@
         static let statusFontSize: CGFloat = 24
         static let titleFontSize: CGFloat = 46
         static let contentMaxWidth: CGFloat = 760
-        /// Width of the Settings detail pane content (sits next to the sidebar, so
+        /// Width of the Settings detail pane content (sits next to the rail, so
         /// it gets a touch more room than the full-screen `contentMaxWidth`).
         static let detailMaxWidth: CGFloat = 860
         /// Width of a secondary column sitting beside a `contentMaxWidth` one.
@@ -36,6 +36,15 @@
         /// The flat dark fill shared by every tvOS settings surface.
         func tvSettingsBackground() -> some View {
             background(TVSettingsMetrics.background.ignoresSafeArea())
+        }
+
+        /// Frames a Settings pane's content beside the rail: its top level
+        /// with the rail's first row, room below the last to scroll it clear.
+        func tvSettingsPaneContent(maxWidth: CGFloat = TVSettingsMetrics.detailMaxWidth) -> some View {
+            frame(maxWidth: maxWidth, alignment: .leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 16)
+                .padding(.bottom, 72)
         }
 
         /// The quiet secondary line shared by the status and empty-state
@@ -232,47 +241,6 @@
     }
 
     // MARK: - Button styles
-
-    /// A minimal sidebar category row: transparent by default, a faint fill when
-    /// selected (focus elsewhere), and a quiet light highlight with dark text
-    /// when focused.
-    struct TVSettingsSidebarButtonStyle: ButtonStyle {
-        let isSelected: Bool
-        /// Renders the row unfocused even while it holds focus — for focus that
-        /// only passes through the sidebar on its way into the detail pane.
-        var suppressesFocus = false
-
-        func makeBody(configuration: Configuration) -> some View {
-            StyleBody(configuration: configuration, isSelected: isSelected, suppressesFocus: suppressesFocus)
-        }
-
-        struct StyleBody: View {
-            let configuration: ButtonStyleConfiguration
-            let isSelected: Bool
-            let suppressesFocus: Bool
-            @Environment(\.isFocused) private var hasFocus
-
-            private var isFocused: Bool {
-                hasFocus && !suppressesFocus
-            }
-
-            var body: some View {
-                let background: AnyShapeStyle = isFocused
-                    ? AnyShapeStyle(Color.white.opacity(0.95))
-                    : (isSelected ? AnyShapeStyle(Color.white.opacity(0.10)) : AnyShapeStyle(Color.clear))
-                return configuration.label
-                    .font(.system(size: TVSettingsMetrics.rowFontSize, weight: isFocused || isSelected ? .medium : .regular))
-                    .foregroundStyle(isFocused ? .black : .white)
-                    .padding(.horizontal, TVSettingsMetrics.rowHPadding)
-                    .padding(.vertical, TVSettingsMetrics.rowVPadding)
-                    .background(
-                        RoundedRectangle(cornerRadius: TVSettingsMetrics.rowCornerRadius, style: .continuous)
-                            .fill(background)
-                    )
-                    .animation(.easeOut(duration: 0.15), value: isFocused)
-            }
-        }
-    }
 
     /// A minimal full-width content row: a faint resting fill that turns to a
     /// quiet light highlight with dark text when focused. Flat — no scale or

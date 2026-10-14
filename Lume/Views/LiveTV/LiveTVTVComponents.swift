@@ -295,8 +295,8 @@
     enum TVLiveTVLayout {
         /// The 1920 pt screen inside tvOS's 80 pt horizontal safe area.
         static let contentWidth: CGFloat = 1760
-        static let railWidth: CGFloat = 340
-        static let spacing: CGFloat = 32
+        static let railWidth = TVSidebarRail.width
+        static let spacing = TVSidebarRail.paneSpacing
 
         /// What the rail leaves for the channel list or guide.
         static var paneWidth: CGFloat {
