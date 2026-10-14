@@ -12,6 +12,7 @@
 		C6AA10042FDD00010000AA04 /* LumeEngine in Embed Frameworks */ = {isa = PBXBuildFile; productRef = C6AA10022FDD00010000AA02 /* LumeEngine */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C6AA310B2FDD00020000AB0B /* LumeWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C6AA31012FDD00020000AB01 /* LumeWidgets.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C6BB20012FDE00030000BB01 /* LumeRecorderKit in Frameworks */ = {isa = PBXBuildFile; productRef = C6BB20022FDE00030000BB02 /* LumeRecorderKit */; };
+		C6BD5701000000000000F003 /* LumeTopShelf.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C6BD5701000000000000A002 /* LumeTopShelf.appex */; platformFilters = (tvos, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C6FF000A2FC5A59D00484601 /* VLCKit in Frameworks */ = {isa = PBXBuildFile; productRef = C6FF000B2FC5A59D00484602 /* VLCKit */; };
 /* End PBXBuildFile section */
 
@@ -36,6 +37,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = C6AA31032FDD00020000AB03;
 			remoteInfo = LumeWidgets;
+		};
+		C6BD5701000000000000F005 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C67C02B82F880F2200842DBA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C6BD5701000000000000E001;
+			remoteInfo = LumeTopShelf;
 		};
 		C6BE110000000000000000A7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -65,6 +73,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				C6AA310B2FDD00020000AB0B /* LumeWidgets.appex in Embed Foundation Extensions */,
+				C6BD5701000000000000F003 /* LumeTopShelf.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -77,6 +86,7 @@
 		C67C02D12F880F2400842DBA /* LumeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LumeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C67C02DB2F880F2400842DBA /* LumeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LumeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6AA31012FDD00020000AB01 /* LumeWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LumeWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6BD5701000000000000A002 /* LumeTopShelf.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LumeTopShelf.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6BE110000000000000000A1 /* LumePerformanceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LumePerformanceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -101,6 +111,13 @@
 				DownloadActivityAttributes.swift,
 			);
 			target = C67C02BF2F880F2200842DBA /* Lume */;
+		};
+		C6BD5701000000000000C002 /* Exceptions for "LumeTopShelf" folder in "LumeTopShelf" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C6BD5701000000000000E001 /* LumeTopShelf */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -130,6 +147,19 @@
 				C6AA310F2FDD00020000AB0F /* Exceptions for "LumeWidgets" folder in "LumeWidgets" target */,
 			);
 			path = LumeWidgets;
+			sourceTree = "<group>";
+		};
+		C6BD5701000000000000B001 /* LumeShared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = LumeShared;
+			sourceTree = "<group>";
+		};
+		C6BD5701000000000000B003 /* LumeTopShelf */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C6BD5701000000000000C002 /* Exceptions for "LumeTopShelf" folder in "LumeTopShelf" target */,
+			);
+			path = LumeTopShelf;
 			sourceTree = "<group>";
 		};
 		C6BE110000000000000000A2 /* LumePerformanceTests */ = {
@@ -172,6 +202,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C6BD5701000000000000E004 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C6BE110000000000000000A3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -191,6 +228,8 @@
 				C67C02D42F880F2400842DBA /* LumeTests */,
 				C67C02DE2F880F2400842DBA /* LumeUITests */,
 				C6BE110000000000000000A2 /* LumePerformanceTests */,
+				C6BD5701000000000000B001 /* LumeShared */,
+				C6BD5701000000000000B003 /* LumeTopShelf */,
 				C67C02C12F880F2200842DBA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -203,6 +242,7 @@
 				C67C02D12F880F2400842DBA /* LumeTests.xctest */,
 				C67C02DB2F880F2400842DBA /* LumeUITests.xctest */,
 				C6BE110000000000000000A1 /* LumePerformanceTests.xctest */,
+				C6BD5701000000000000A002 /* LumeTopShelf.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -226,9 +266,11 @@
 			);
 			dependencies = (
 				C6AA310E2FDD00020000AB0E /* PBXTargetDependency */,
+				C6BD5701000000000000F007 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				C67C02C22F880F2200842DBA /* Lume */,
+				C6BD5701000000000000B001 /* LumeShared */,
 			);
 			name = Lume;
 			packageProductDependencies = (
@@ -301,12 +343,36 @@
 			);
 			fileSystemSynchronizedGroups = (
 				C6AA31022FDD00020000AB02 /* LumeWidgets */,
+				C6BD5701000000000000B001 /* LumeShared */,
 			);
 			name = LumeWidgets;
 			packageProductDependencies = (
 			);
 			productName = LumeWidgets;
 			productReference = C6AA31012FDD00020000AB01 /* LumeWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		C6BD5701000000000000E001 /* LumeTopShelf */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C6BD5701000000000000E002 /* Build configuration list for PBXNativeTarget "LumeTopShelf" */;
+			buildPhases = (
+				C6BD5701000000000000E003 /* Sources */,
+				C6BD5701000000000000E004 /* Frameworks */,
+				C6BD5701000000000000E005 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				C6BD5701000000000000B001 /* LumeShared */,
+				C6BD5701000000000000B003 /* LumeTopShelf */,
+			);
+			name = LumeTopShelf;
+			packageProductDependencies = (
+			);
+			productName = LumeTopShelf;
+			productReference = C6BD5701000000000000A002 /* LumeTopShelf.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		C6BE110000000000000000A6 /* LumePerformanceTests */ = {
@@ -356,6 +422,9 @@
 					C6AA31032FDD00020000AB03 = {
 						CreatedOnToolsVersion = 26.4;
 					};
+					C6BD5701000000000000E001 = {
+						CreatedOnToolsVersion = 26.4;
+					};
 					C6BE110000000000000000A6 = {
 						TestTargetID = C67C02BF2F880F2200842DBA;
 					};
@@ -394,6 +463,7 @@
 				C67C02D02F880F2400842DBA /* LumeTests */,
 				C67C02DA2F880F2400842DBA /* LumeUITests */,
 				C6BE110000000000000000A6 /* LumePerformanceTests */,
+				C6BD5701000000000000E001 /* LumeTopShelf */,
 			);
 		};
 /* End PBXProject section */
@@ -421,6 +491,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C6AA31062FDD00020000AB06 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C6BD5701000000000000E005 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -508,6 +585,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C6BD5701000000000000E003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C6BE110000000000000000A4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -534,6 +618,14 @@
 			target = C6AA31032FDD00020000AB03 /* LumeWidgets */;
 			targetProxy = C6AA310D2FDD00020000AB0D /* PBXContainerItemProxy */;
 		};
+		C6BD5701000000000000F007 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilters = (
+				tvos,
+			);
+			target = C6BD5701000000000000E001 /* LumeTopShelf */;
+			targetProxy = C6BD5701000000000000F005 /* PBXContainerItemProxy */;
+		};
 		C6BE110000000000000000A8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C67C02BF2F880F2200842DBA /* Lume */;
@@ -549,6 +641,8 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Lume/Lume.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=appletvos*]" = "Lume/Lume-tvOS.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=appletvsimulator*]" = "Lume/Lume-tvOS.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]" = "Lume/Lume-iOS.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=iphonesimulator*]" = "Lume/Lume-iOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
@@ -608,6 +702,8 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Lume/Lume.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=appletvos*]" = "Lume/Lume-tvOS.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=appletvsimulator*]" = "Lume/Lume-tvOS.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]" = "Lume/Lume-iOS.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=iphonesimulator*]" = "Lume/Lume-iOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
@@ -940,6 +1036,8 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Lume/Lume.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=appletvos*]" = "Lume/Lume-tvOS.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=appletvsimulator*]" = "Lume/Lume-tvOS.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]" = "Lume/Lume-iOS.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=iphonesimulator*]" = "Lume/Lume-iOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
@@ -1138,6 +1236,130 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Sideload;
+		};
+		C6BD5701000000000000E006 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LumeTopShelf/LumeTopShelf.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 32;
+				DEVELOPMENT_TEAM = CHG45F8MCL;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LumeTopShelf/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Lume;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.6.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bilipp.lume.topshelf;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 18.0;
+			};
+			name = Debug;
+		};
+		C6BD5701000000000000E007 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LumeTopShelf/LumeTopShelf.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 32;
+				DEVELOPMENT_TEAM = CHG45F8MCL;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LumeTopShelf/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Lume;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.6.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bilipp.lume.topshelf;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 18.0;
+			};
+			name = Release;
+		};
+		C6BD5701000000000000E008 /* Sideload */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LumeTopShelf/LumeTopShelf.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 32;
+				DEVELOPMENT_TEAM = CHG45F8MCL;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LumeTopShelf/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Lume;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.6.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bilipp.lume.topshelf;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 18.0;
+			};
+			name = Sideload;
+		};
+		C6BD5701000000000000E009 /* Benchmark */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LumeTopShelf/LumeTopShelf.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 32;
+				DEVELOPMENT_TEAM = CHG45F8MCL;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LumeTopShelf/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Lume;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.6.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bilipp.lume.topshelf;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 18.0;
+			};
+			name = Benchmark;
 		};
 		C6BE110000000000000000AA /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1493,6 +1715,17 @@
 				C6AA31092FDD00020000AB09 /* Release */,
 				C6AA310A2FDD00020000AB0A /* Sideload */,
 				C6BE110000000000000000B5 /* Benchmark */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C6BD5701000000000000E002 /* Build configuration list for PBXNativeTarget "LumeTopShelf" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C6BD5701000000000000E006 /* Debug */,
+				C6BD5701000000000000E007 /* Release */,
+				C6BD5701000000000000E008 /* Sideload */,
+				C6BD5701000000000000E009 /* Benchmark */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
