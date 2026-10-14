@@ -6,8 +6,9 @@
 //  home screen. Mirrors the widgets: Continue Watching, On Now and Favorites
 //  from the shared snapshot the app exports, shown, ordered and sized the way
 //  the user set it up in Settings › Home (`TopShelfConfiguration`). Selecting
-//  an item deep-links into the app via `lume://`; the system fetches artwork
-//  itself from the URLs we hand it.
+//  an item deep-links into the app via `lume://`. The system fetches poster
+//  and backdrop artwork itself; channel logos go up as tiles rendered here
+//  (`ChannelTileRenderer`).
 //
 
 import Foundation
@@ -31,7 +32,15 @@ final class ContentProvider: TVTopShelfContentProvider {
         }
         switch configuration.style {
         case .sectioned:
-            completionHandler(TVTopShelfSectionedContent(sections: sections.map(\.sectionedCollection)))
+            // Channel logos go up as rendered tiles (see `ChannelTileRenderer`),
+            // which takes a download per new logo — hence the async hop.
+            let channels = sections.flatMap(\.entries).filter(\.isChannel).map {
+                ChannelTileRenderer.Channel(id: $0.id, name: $0.title, logoURL: $0.posterURL)
+            }
+            Task {
+                let tiles = await ChannelTileRenderer.tiles(for: channels)
+                completionHandler(TVTopShelfSectionedContent(sections: sections.map { $0.sectionedCollection(tiles: tiles) }))
+            }
         case .carousel:
             let items = TopShelfSection.carouselItems(sections)
             completionHandler(items.isEmpty ? nil : TVTopShelfCarouselContent(style: .details, items: items))
@@ -78,10 +87,13 @@ private struct TopShelfSection {
         }
     }
 
-    var sectionedCollection: TVTopShelfItemCollection<TVTopShelfSectionedItem> {
+    /// `tiles` holds the rendered channel tiles, keyed by entry id.
+    func sectionedCollection(tiles: [String: URL]) -> TVTopShelfItemCollection<TVTopShelfSectionedItem> {
         // Identifiers are scoped to the section: a favorite that's also in
         // progress appears in both rows.
-        let collection = TVTopShelfItemCollection(items: entries.map { $0.sectionedItem(identifier: "\(kind.rawValue)-\($0.id)") })
+        let collection = TVTopShelfItemCollection(items: entries.map {
+            $0.sectionedItem(identifier: "\(kind.rawValue)-\($0.id)", tile: tiles[$0.id])
+        })
         collection.title = title
         return collection
     }
@@ -128,13 +140,15 @@ private extension TopShelfSection.Entry {
         )
     }
 
-    func sectionedItem(identifier: String) -> TVTopShelfSectionedItem {
+    /// A channel shows its rendered `tile` — the raw logo would be stretched
+    /// across the card — and no artwork at all when rendering failed.
+    func sectionedItem(identifier: String, tile: URL?) -> TVTopShelfSectionedItem {
         let item = TVTopShelfSectionedItem(identifier: identifier)
         // A channel with guide data reads "News 24 — Evening News".
         item.title = isChannel ? [title, summary].compactMap(\.self).joined(separator: " — ") : title
         item.imageShape = isChannel ? .square : .poster
-        if let posterURL {
-            item.setImageURL(posterURL, for: [.screenScale1x, .screenScale2x])
+        if let imageURL = isChannel ? tile : posterURL {
+            item.setImageURL(imageURL, for: [.screenScale1x, .screenScale2x])
         }
         if let progress {
             item.playbackProgress = progress
