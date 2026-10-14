@@ -149,6 +149,10 @@ enum PlaylistSourceType: String, Codable {
     case jellyfin
     case plex
     case emby
+    /// A Silo server, synced through its Jellyfin-compatible service (see
+    /// `MediaServerFlavor`). `serverURL` holds that service's address, not the
+    /// one the user opens Silo at.
+    case silo
 
     /// Whether this source is a personal media server — a library of movies
     /// and series that a server application indexes and streams, as opposed
@@ -156,7 +160,7 @@ enum PlaylistSourceType: String, Codable {
     /// switch so a future source type cannot inherit a default.
     var isMediaServer: Bool {
         switch self {
-        case .jellyfin, .emby, .plex: true
+        case .jellyfin, .emby, .plex, .silo: true
         case .xtream, .m3u, .stalker, .webdav: false
         }
     }
@@ -168,7 +172,7 @@ enum PlaylistSourceType: String, Codable {
     var canCarryLiveChannels: Bool {
         switch self {
         case .xtream, .m3u, .stalker: true
-        case .webdav, .jellyfin, .emby, .plex: false
+        case .webdav, .jellyfin, .emby, .plex, .silo: false
         }
     }
 
@@ -178,7 +182,7 @@ enum PlaylistSourceType: String, Codable {
     nonisolated var supportsRecording: Bool {
         switch self {
         case .xtream, .m3u, .stalker: true
-        case .webdav, .jellyfin, .emby, .plex: false
+        case .webdav, .jellyfin, .emby, .plex, .silo: false
         }
     }
 
@@ -187,7 +191,7 @@ enum PlaylistSourceType: String, Codable {
     nonisolated var supportsRecordingSchedule: Bool {
         switch self {
         case .xtream, .m3u: true
-        case .stalker, .webdav, .jellyfin, .emby, .plex: false
+        case .stalker, .webdav, .jellyfin, .emby, .plex, .silo: false
         }
     }
 }
@@ -327,9 +331,9 @@ extension Playlist {
         // A WebDAV file is a plain byte range — there is no HLS/MPEG-TS choice
         // to make.
         case .webdav: false
-        // A Jellyfin/Emby direct stream is a plain byte range too, and so is
-        // a Plex part — transcoding profiles are a later change.
-        case .jellyfin, .emby, .plex: false
+        // A Jellyfin/Emby/Silo direct stream is a plain byte range too, and
+        // so is a Plex part — transcoding profiles are a later change.
+        case .jellyfin, .emby, .plex, .silo: false
         }
     }
 
@@ -348,7 +352,7 @@ extension Playlist {
         // Deferred to a later change: downloads need the session token as a
         // header the background session cannot re-issue after relaunch. The
         // same holds for Plex's `X-Plex-Token`.
-        case .jellyfin, .emby, .plex: false
+        case .jellyfin, .emby, .plex, .silo: false
         }
     }
 
