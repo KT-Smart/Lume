@@ -5,7 +5,7 @@
 //  Custom URL-scheme deep links. `lume://movie/{tmdbId}` and
 //  `lume://series/{tmdbId}` open a title's detail screen directly;
 //  `lume://play/{movie|episode|live}/{catalogId}` and
-//  `lume://open/series/{catalogId}` are emitted by the widgets / Top Shelf
+//  `lume://open/{series|movie}/{catalogId}` are emitted by the widgets / Top Shelf
 //  (built in `WidgetDeepLink`) and launch playback or a detail screen;
 //  `lume://resume` reopens the last played stream and `lume://downloads` is
 //  the download Live Activity's tap target.
@@ -23,6 +23,7 @@ nonisolated enum DeepLink: Equatable {
     case playEpisode(id: String)
     case playLive(id: String)
     case openSeries(id: String)
+    case openMovie(id: String)
     /// Reopens the player on the last played stream, where it left off
     /// (see `PlaybackResumeStore`).
     case resume
@@ -71,10 +72,20 @@ nonisolated enum DeepLink: Equatable {
         case "play":
             return play(components)
         case "open":
-            guard components.count == 2, components[0].lowercased() == "series" else { return nil }
-            return .openSeries(id: components[1])
+            return open(components)
         default:
             return nil
+        }
+    }
+
+    /// `open/{series|movie}/{catalogId}` — built by `WidgetDeepLink.openSeries`
+    /// and `.openMovie`.
+    private static func open(_ components: [String]) -> DeepLink? {
+        guard components.count == 2 else { return nil }
+        return switch components[0].lowercased() {
+        case "series": .openSeries(id: components[1])
+        case "movie": .openMovie(id: components[1])
+        default: nil
         }
     }
 

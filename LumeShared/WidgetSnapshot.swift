@@ -51,6 +51,10 @@ nonisolated struct WidgetMediaItem: Codable, Equatable, Identifiable {
     /// Resume fraction (0...1) for partially-watched items, nil otherwise.
     var progress: Double?
     var deepLink: URL
+    /// The title's detail screen — for an episode, its show's. The Top Shelf
+    /// opens this on Select and keeps `deepLink` for the Play button; nil for
+    /// a channel, which has no detail screen.
+    var detailLink: URL?
 }
 
 /// The now/next programme pair for one favorite channel, resolved from the EPG

@@ -147,7 +147,8 @@ enum WidgetSnapshotExporter {
                 imageURL: URL(string: movie.streamIcon ?? ""),
                 backdropURL: TMDBClient.backdropURL(movie.backdropPath),
                 progress: progress,
-                deepLink: deepLink
+                deepLink: deepLink,
+                detailLink: WidgetDeepLink.openMovie(id: movie.id)
             )))
         }
         return entries
@@ -194,7 +195,8 @@ enum WidgetSnapshotExporter {
             imageURL: URL(string: show.cover ?? episode.movieImage ?? ""),
             backdropURL: TMDBClient.backdropURL(show.backdropPath),
             progress: progress,
-            deepLink: deepLink
+            deepLink: deepLink,
+            detailLink: WidgetDeepLink.openSeries(id: show.id)
         ))
     }
 
@@ -220,7 +222,8 @@ enum WidgetSnapshotExporter {
                 imageURL: URL(string: movie.streamIcon ?? ""),
                 backdropURL: TMDBClient.backdropURL(movie.backdropPath),
                 progress: nil,
-                deepLink: deepLink
+                deepLink: deepLink,
+                detailLink: WidgetDeepLink.openMovie(id: movie.id)
             )))
         }
 
@@ -235,7 +238,8 @@ enum WidgetSnapshotExporter {
                 imageURL: URL(string: show.cover ?? ""),
                 backdropURL: TMDBClient.backdropURL(show.backdropPath),
                 progress: nil,
-                deepLink: deepLink
+                deepLink: deepLink,
+                detailLink: deepLink
             )))
         }
 

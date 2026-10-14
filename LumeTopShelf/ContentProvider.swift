@@ -62,7 +62,17 @@ private struct TopShelfSection {
         let backdropURL: URL?
         let isChannel: Bool
         let progress: Double?
+        /// Played by the remote's Play button.
         let deepLink: URL
+        /// Opened on Select: the detail screen, so a click never starts
+        /// playback by surprise. Nil for a channel, which has none.
+        let detailLink: URL?
+
+        /// Select opens the detail screen; Play plays. A channel plays on both.
+        func applyActions(to item: TVTopShelfItem) {
+            item.displayAction = TVTopShelfAction(url: detailLink ?? deepLink)
+            item.playAction = TVTopShelfAction(url: deepLink)
+        }
     }
 
     var title: String {
@@ -121,7 +131,8 @@ private extension TopShelfSection.Entry {
             backdropURL: media.backdropURL,
             isChannel: media.kind == .live,
             progress: media.progress,
-            deepLink: media.deepLink
+            deepLink: media.deepLink,
+            detailLink: media.detailLink
         )
     }
 
@@ -135,8 +146,7 @@ private extension TopShelfSection.Entry {
         if let progress {
             item.playbackProgress = progress
         }
-        item.displayAction = TVTopShelfAction(url: deepLink)
-        item.playAction = TVTopShelfAction(url: deepLink)
+        applyActions(to: item)
         return item
     }
 
@@ -151,8 +161,7 @@ private extension TopShelfSection.Entry {
         }
         // Carousel items have no progress bar (`playbackProgress` is a
         // sectioned-item property), so resume state shows only in Rows.
-        item.displayAction = TVTopShelfAction(url: deepLink)
-        item.playAction = TVTopShelfAction(url: deepLink)
+        applyActions(to: item)
         return item
     }
 }

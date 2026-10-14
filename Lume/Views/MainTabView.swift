@@ -395,14 +395,12 @@ struct MainTabView: View {
         guard let link = DeepLink(url: url) else { return }
         switch link {
         case let .movie(tmdbId):
-            guard showsTab(.movies), let movie = resolveMovie(tmdbId: tmdbId) else { return }
-            router.selectedTab = .movies
-            router.moviesPath = NavigationPath()
-            router.moviesPath.append(movie)
+            guard let movie = resolveMovie(tmdbId: tmdbId) else { return }
+            openMovieDetail(movie)
         case let .series(tmdbId):
             guard let series = resolveSeries(tmdbId: tmdbId) else { return }
             openSeriesDetail(series)
-        case .playMovie, .playEpisode, .playLive, .openSeries:
+        case .playMovie, .playEpisode, .playLive, .openSeries, .openMovie:
             handleWidgetLink(link)
         case .resume:
             // When a player session is already up, foregrounding the app is
@@ -422,7 +420,7 @@ struct MainTabView: View {
     }
 
     /// Handles a widget / Top Shelf link: `play` launches playback, `open`
-    /// pushes a series detail screen — both by catalog id.
+    /// pushes a movie or series detail screen — both by catalog id.
     private func handleWidgetLink(_ link: DeepLink) {
         switch WidgetLinkResolver.resolve(link, in: modelContext, restriction: contentRestriction) {
         case let .play(media):
@@ -436,9 +434,20 @@ struct MainTabView: View {
             #endif
         case let .openSeries(series):
             openSeriesDetail(series)
+        case let .openMovie(movie):
+            openMovieDetail(movie)
         case nil:
             break
         }
+    }
+
+    /// Pushes a movie detail screen on the Movies tab — a no-op when the
+    /// profile hides that tab.
+    private func openMovieDetail(_ movie: Movie) {
+        guard showsTab(.movies) else { return }
+        router.selectedTab = .movies
+        router.moviesPath = NavigationPath()
+        router.moviesPath.append(movie)
     }
 
     /// Pushes a series detail screen on the Series tab — a no-op when the

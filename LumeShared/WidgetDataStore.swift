@@ -76,6 +76,11 @@ nonisolated enum WidgetDeepLink {
         build(host: "open", kindSegment: "series", id: id)
     }
 
+    /// `lume://open/movie/{catalogId}` — the movie's detail screen.
+    static func openMovie(id: String) -> URL? {
+        build(host: "open", kindSegment: "movie", id: id)
+    }
+
     private static func build(host: String, kindSegment: String, id: String) -> URL? {
         guard let escaped = id.addingPercentEncoding(withAllowedCharacters: .alphanumerics) else { return nil }
         return URL(string: "\(scheme)://\(host)/\(kindSegment)/\(escaped)")

@@ -23,6 +23,11 @@ struct DeepLinkWidgetRoundTripTests {
         #expect(DeepLink(url: url) == .playLive(id: "ABC-55"))
     }
 
+    @Test func `open movie link round-trips`() throws {
+        let url = try #require(WidgetDeepLink.openMovie(id: "ABC-42"))
+        #expect(DeepLink(url: url) == .openMovie(id: "ABC-42"))
+    }
+
     @Test func `open series link round-trips`() throws {
         let url = try #require(WidgetDeepLink.openSeries(id: "ABC-77"))
         #expect(DeepLink(url: url) == .openSeries(id: "ABC-77"))
@@ -145,6 +150,9 @@ struct WidgetSnapshotExporterTests {
         let movie = try #require(snapshot.continueWatching.last)
         #expect(movie.title == "Resumable")
         #expect(movie.backdropURL == TMDBClient.backdropURL("/m1-backdrop.jpg"))
+        // Select opens the detail screen — an episode's is its show's.
+        #expect(movie.detailLink == WidgetDeepLink.openMovie(id: "\(playlist.id.uuidString)-m1"))
+        #expect(episode.detailLink == WidgetDeepLink.openSeries(id: "\(playlist.id.uuidString)-s1"))
         #expect(movie.progress == 0.25)
         // The fully-watched movie must not resurface.
         #expect(!snapshot.continueWatching.contains { $0.title == "Watched" })
@@ -314,6 +322,16 @@ struct WidgetLinkResolverTests {
         #expect(resolve(link, container) != nil)
         #expect(resolve(link, container, child: true, restricted: [restrictedID]) == nil)
         #expect(resolve(.openSeries(id: "\(prefix)-s1"), container, child: true, restricted: [restrictedID]) == nil)
+    }
+
+    @Test func `an open movie link resolves to the movie`() throws {
+        let (container, playlist) = try seed()
+        let target = resolve(.openMovie(id: "\(playlist.id.uuidString)-m1"), container)
+        guard case let .openMovie(movie) = target else {
+            Issue.record("expected a movie, got \(String(describing: target))")
+            return
+        }
+        #expect(movie.name == "Movie")
     }
 
     @Test func `a hidden channel does not play`() throws {
