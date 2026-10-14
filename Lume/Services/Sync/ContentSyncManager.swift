@@ -105,8 +105,8 @@ actor ContentSyncManager {
             try await performStalkerSync(playlist: playlist, playlistId: playlistId, progress: progress, full: full)
         case .webdav:
             try await performWebDAVSync(playlist: playlist, playlistId: playlistId, progress: progress)
-        case .jellyfin, .emby:
-            // Both speak the same API; the flavour only tags the rows.
+        case .jellyfin, .emby, .silo:
+            // All three speak the same API; the flavour only tags the rows.
             let flavor = MediaServerFlavor(sourceType: playlist.sourceType) ?? .jellyfin
             try await performMediaServerSync(playlist: playlist, playlistId: playlistId, flavor: flavor, progress: progress)
         case .plex:
@@ -259,7 +259,7 @@ actor ContentSyncManager {
             // WebDAV episodes are imported alongside the rest of the catalog
             // during sync, so there is nothing to fetch lazily here.
             []
-        case .jellyfin, .emby, .plex:
+        case .jellyfin, .emby, .plex, .silo:
             // Media-server episodes are imported alongside the rest of the
             // catalog during sync, so there is nothing to fetch lazily here.
             []

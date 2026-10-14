@@ -331,7 +331,7 @@ struct RecordingRequestPlannerTests {
 
     // MARK: - Source support
 
-    private static let allSourceTypes: [PlaylistSourceType] = [.xtream, .m3u, .stalker, .webdav, .jellyfin, .plex, .emby]
+    private static let allSourceTypes: [PlaylistSourceType] = [.xtream, .m3u, .stalker, .webdav, .jellyfin, .plex, .emby, .silo]
 
     /// Exhaustive on purpose: a new source type fails to compile here until its
     /// recording support is decided.
@@ -339,7 +339,7 @@ struct RecordingRequestPlannerTests {
         switch type {
         case .xtream, .m3u: (true, true)
         case .stalker: (true, false)
-        case .webdav, .jellyfin, .plex, .emby: (false, false)
+        case .webdav, .jellyfin, .plex, .emby, .silo: (false, false)
         }
     }
 

@@ -18558,108 +18558,108 @@
         }
       }
     },
-    "Enter your server address — Jellyfin, Emby, Plex and WebDAV are detected automatically. A declined local network prompt can only be allowed again in Settings." : {
+    "Enter your server address — Jellyfin, Emby, Plex, Silo and WebDAV are detected automatically. A declined local network prompt can only be allowed again in Settings." : {
       "comment" : "tvOS hint under the media server fields.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gib deine Serveradresse ein – Jellyfin, Emby, Plex und WebDAV werden automatisch erkannt. Eine abgelehnte Anfrage zum lokalen Netzwerk lässt sich nur in den Einstellungen wieder erlauben."
+            "value" : "Gib deine Serveradresse ein – Jellyfin, Emby, Plex, Silo und WebDAV werden automatisch erkannt. Eine abgelehnte Anfrage zum lokalen Netzwerk lässt sich nur in den Einstellungen wieder erlauben."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Introduce la dirección de tu servidor: Jellyfin, Emby, Plex y WebDAV se detectan automáticamente. Un permiso de red local denegado solo puede volver a concederse en Ajustes."
+            "value" : "Introduce la dirección de tu servidor: Jellyfin, Emby, Plex, Silo y WebDAV se detectan automáticamente. Un permiso de red local denegado solo puede volver a concederse en Ajustes."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Saisissez l’adresse de votre serveur — Jellyfin, Emby, Plex et WebDAV sont détectés automatiquement. Une autorisation de réseau local refusée ne peut être réactivée que dans Réglages."
+            "value" : "Saisissez l’adresse de votre serveur — Jellyfin, Emby, Plex, Silo et WebDAV sont détectés automatiquement. Une autorisation de réseau local refusée ne peut être réactivée que dans Réglages."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inserisci l’indirizzo del tuo server: Jellyfin, Emby, Plex e WebDAV vengono rilevati automaticamente. Un permesso di rete locale negato può essere riattivato solo in Impostazioni."
+            "value" : "Inserisci l’indirizzo del tuo server: Jellyfin, Emby, Plex, Silo e WebDAV vengono rilevati automaticamente. Un permesso di rete locale negato può essere riattivato solo in Impostazioni."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サーバーのアドレスを入力してください。Jellyfin、Emby、Plex、WebDAVは自動的に判別されます。一度拒否したローカルネットワークの許可は「設定」からのみ再許可できます。"
+            "value" : "サーバーのアドレスを入力してください。Jellyfin、Emby、Plex、Silo、WebDAVは自動的に判別されます。一度拒否したローカルネットワークの許可は「設定」からのみ再許可できます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "서버 주소를 입력하세요. Jellyfin, Emby, Plex, WebDAV를 자동으로 인식합니다. 거부한 로컬 네트워크 권한은 설정에서만 다시 허용할 수 있습니다."
+            "value" : "서버 주소를 입력하세요. Jellyfin, Emby, Plex, Silo, WebDAV를 자동으로 인식합니다. 거부한 로컬 네트워크 권한은 설정에서만 다시 허용할 수 있습니다."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Digite o endereço do seu servidor — Jellyfin, Emby, Plex e WebDAV são detectados automaticamente. Uma permissão de rede local recusada só pode ser concedida novamente nos Ajustes."
+            "value" : "Digite o endereço do seu servidor — Jellyfin, Emby, Plex, Silo e WebDAV são detectados automaticamente. Uma permissão de rede local recusada só pode ser concedida novamente nos Ajustes."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "输入服务器地址 —— Jellyfin、Emby、Plex 和 WebDAV 会被自动识别。若已拒绝本地网络授权，只能在“设置”中重新允许。"
+            "value" : "输入服务器地址 —— Jellyfin、Emby、Plex、Silo 和 WebDAV 会被自动识别。若已拒绝本地网络授权，只能在“设置”中重新允许。"
           }
         }
       }
     },
-    "Enter your server address — Lume recognizes Jellyfin, Emby and Plex servers and WebDAV shares automatically." : {
+    "Enter your server address — Lume recognizes Jellyfin, Emby, Plex and Silo servers and WebDAV shares automatically." : {
       "comment" : "Footer explaining that the media server kind is detected from the URL.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gib deine Serveradresse ein – Lume erkennt Jellyfin-, Emby- und Plex-Server sowie WebDAV-Freigaben automatisch."
+            "value" : "Gib deine Serveradresse ein – Lume erkennt Jellyfin-, Emby-, Plex- und Silo-Server sowie WebDAV-Freigaben automatisch."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Introduce la dirección de tu servidor: Lume reconoce automáticamente servidores Jellyfin, Emby y Plex y recursos WebDAV."
+            "value" : "Introduce la dirección de tu servidor: Lume reconoce automáticamente servidores Jellyfin, Emby, Plex y Silo y recursos WebDAV."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Saisissez l’adresse de votre serveur — Lume reconnaît automatiquement les serveurs Jellyfin, Emby et Plex ainsi que les partages WebDAV."
+            "value" : "Saisissez l’adresse de votre serveur — Lume reconnaît automatiquement les serveurs Jellyfin, Emby, Plex et Silo ainsi que les partages WebDAV."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inserisci l’indirizzo del tuo server: Lume riconosce automaticamente i server Jellyfin, Emby e Plex e le condivisioni WebDAV."
+            "value" : "Inserisci l’indirizzo del tuo server: Lume riconosce automaticamente i server Jellyfin, Emby, Plex e Silo e le condivisioni WebDAV."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サーバーのアドレスを入力してください。LumeはJellyfin、Emby、Plexの各サーバーとWebDAV共有を自動的に判別します。"
+            "value" : "サーバーのアドレスを入力してください。LumeはJellyfin、Emby、Plex、Siloの各サーバーとWebDAV共有を自動的に判別します。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "서버 주소를 입력하세요. Lume이 Jellyfin, Emby, Plex 서버와 WebDAV 공유를 자동으로 인식합니다."
+            "value" : "서버 주소를 입력하세요. Lume이 Jellyfin, Emby, Plex, Silo 서버와 WebDAV 공유를 자동으로 인식합니다."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Digite o endereço do seu servidor — o Lume reconhece servidores Jellyfin, Emby e Plex e compartilhamentos WebDAV automaticamente."
+            "value" : "Digite o endereço do seu servidor — o Lume reconhece servidores Jellyfin, Emby, Plex e Silo e compartilhamentos WebDAV automaticamente."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "输入服务器地址 —— Lume 会自动识别 Jellyfin、Emby 和 Plex 服务器以及 WebDAV 共享。"
+            "value" : "输入服务器地址 —— Lume 会自动识别 Jellyfin、Emby、Plex 和 Silo 服务器以及 WebDAV 共享。"
           }
         }
       }
@@ -26416,6 +26416,59 @@
         }
       }
     },
+    "Jellyfin compatibility is turned off on this Silo server. Lume connects to Silo through it — ask the server's admin to turn it on in Silo's settings." : {
+      "comment" : "Error when a Silo server has its Jellyfin-compatible service switched off.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Jellyfin-Kompatibilität ist auf diesem Silo-Server ausgeschaltet. Lume verbindet sich darüber mit Silo – bitte den Administrator des Servers, sie in den Silo-Einstellungen einzuschalten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La compatibilidad con Jellyfin está desactivada en este servidor Silo. Lume se conecta a Silo a través de ella: pide al administrador del servidor que la active en los ajustes de Silo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La compatibilité Jellyfin est désactivée sur ce serveur Silo. Lume se connecte à Silo par son intermédiaire — demandez à l’administrateur du serveur de l’activer dans les réglages de Silo."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La compatibilità Jellyfin è disattivata su questo server Silo. Lume si collega a Silo tramite essa: chiedi all’amministratore del server di attivarla nelle impostazioni di Silo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このSiloサーバーではJellyfin互換機能がオフになっています。LumeはこれをSiloとの接続に使用します。サーバーの管理者にSiloの設定でオンにするよう依頼してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 Silo 서버에서 Jellyfin 호환 기능이 꺼져 있습니다. Lume은 이 기능을 통해 Silo에 연결합니다. 서버 관리자에게 Silo 설정에서 켜 달라고 요청하세요."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A compatibilidade com Jellyfin está desativada neste servidor Silo. O Lume se conecta ao Silo por meio dela — peça ao administrador do servidor para ativá-la nas configurações do Silo."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Silo 服务器已关闭 Jellyfin 兼容功能。Lume 通过它连接 Silo——请让服务器管理员在 Silo 的设置中开启它。"
+          }
+        }
+      }
+    },
     "Jellyfin Server" : {
       "comment" : "The heading for the Jellyfin server fields.",
       "isCommentAutoGenerated" : true,
@@ -29444,55 +29497,55 @@
         }
       }
     },
-    "Lume couldn't recognize a media server at that address. Enter your Jellyfin, Emby or Plex server's base address, or the full path of a WebDAV folder." : {
+    "Lume couldn't recognize a media server at that address. Enter your Jellyfin, Emby, Plex or Silo server's base address, or the full path of a WebDAV folder." : {
       "comment" : "Error message when no media server kind was recognized at the entered address.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lume konnte unter dieser Adresse keinen Medienserver erkennen. Gib die Basisadresse deines Jellyfin-, Emby- oder Plex-Servers ein oder den vollständigen Pfad eines WebDAV-Ordners."
+            "value" : "Lume konnte unter dieser Adresse keinen Medienserver erkennen. Gib die Basisadresse deines Jellyfin-, Emby-, Plex- oder Silo-Servers ein oder den vollständigen Pfad eines WebDAV-Ordners."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lume no reconoció ningún servidor multimedia en esa dirección. Introduce la dirección base de tu servidor Jellyfin, Emby o Plex, o la ruta completa de una carpeta WebDAV."
+            "value" : "Lume no reconoció ningún servidor multimedia en esa dirección. Introduce la dirección base de tu servidor Jellyfin, Emby, Plex o Silo, o la ruta completa de una carpeta WebDAV."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lume n’a reconnu aucun serveur multimédia à cette adresse. Saisissez l’adresse de base de votre serveur Jellyfin, Emby ou Plex, ou le chemin complet d’un dossier WebDAV."
+            "value" : "Lume n’a reconnu aucun serveur multimédia à cette adresse. Saisissez l’adresse de base de votre serveur Jellyfin, Emby, Plex ou Silo, ou le chemin complet d’un dossier WebDAV."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lume non ha riconosciuto alcun media server a questo indirizzo. Inserisci l’indirizzo base del tuo server Jellyfin, Emby o Plex, oppure il percorso completo di una cartella WebDAV."
+            "value" : "Lume non ha riconosciuto alcun media server a questo indirizzo. Inserisci l’indirizzo base del tuo server Jellyfin, Emby, Plex o Silo, oppure il percorso completo di una cartella WebDAV."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このアドレスではメディアサーバーを認識できませんでした。Jellyfin、EmbyまたはPlexサーバーのベースアドレス、あるいはWebDAVフォルダの完全なパスを入力してください。"
+            "value" : "このアドレスではメディアサーバーを認識できませんでした。Jellyfin、Emby、PlexまたはSiloサーバーのベースアドレス、あるいはWebDAVフォルダの完全なパスを入力してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "해당 주소에서 미디어 서버를 인식하지 못했습니다. Jellyfin, Emby 또는 Plex 서버의 기본 주소나 WebDAV 폴더의 전체 경로를 입력하세요."
+            "value" : "해당 주소에서 미디어 서버를 인식하지 못했습니다. Jellyfin, Emby, Plex 또는 Silo 서버의 기본 주소나 WebDAV 폴더의 전체 경로를 입력하세요."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Lume não reconheceu nenhum servidor de mídia nesse endereço. Digite o endereço base do seu servidor Jellyfin, Emby ou Plex, ou o caminho completo de uma pasta WebDAV."
+            "value" : "O Lume não reconheceu nenhum servidor de mídia nesse endereço. Digite o endereço base do seu servidor Jellyfin, Emby, Plex ou Silo, ou o caminho completo de uma pasta WebDAV."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lume 无法在该地址识别出媒体服务器。请输入 Jellyfin、Emby 或 Plex 服务器的基础地址，或 WebDAV 文件夹的完整路径。"
+            "value" : "Lume 无法在该地址识别出媒体服务器。请输入 Jellyfin、Emby、Plex 或 Silo 服务器的基础地址，或 WebDAV 文件夹的完整路径。"
           }
         }
       }
@@ -30231,6 +30284,59 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lume 会选择流以音轨形式提供的这些语言中的第一种。拖动可重新排序。如果播放的音轨不属于其中任何一种语言，且流中包含强制字幕轨道，则会自动开启该轨道。将在下次播放开始时生效。"
+          }
+        }
+      }
+    },
+    "Lume signed in to Silo but couldn't reach its Jellyfin compatibility service. Make sure the public URL in Silo's Jellyfin compatibility settings is an address this device can reach." : {
+      "comment" : "Error when Lume signed in to Silo but none of the addresses of its Jellyfin-compatible service answered.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lume hat sich bei Silo angemeldet, konnte aber den Jellyfin-Kompatibilitätsdienst nicht erreichen. Achte darauf, dass die öffentliche URL in den Jellyfin-Kompatibilitätseinstellungen von Silo eine Adresse ist, die dieses Gerät erreichen kann."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lume inició sesión en Silo, pero no pudo acceder a su servicio de compatibilidad con Jellyfin. Asegúrate de que la URL pública en los ajustes de compatibilidad con Jellyfin de Silo sea una dirección accesible desde este dispositivo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lume s’est connecté à Silo mais n’a pas pu joindre son service de compatibilité Jellyfin. Vérifiez que l’URL publique dans les réglages de compatibilité Jellyfin de Silo est une adresse que cet appareil peut joindre."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lume ha effettuato l’accesso a Silo ma non è riuscito a raggiungere il suo servizio di compatibilità Jellyfin. Assicurati che l’URL pubblico nelle impostazioni di compatibilità Jellyfin di Silo sia un indirizzo raggiungibile da questo dispositivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LumeはSiloにサインインしましたが、Jellyfin互換サービスに接続できませんでした。SiloのJellyfin互換設定にある公開URLが、このデバイスから到達できるアドレスになっているか確認してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lume이 Silo에 로그인했지만 Jellyfin 호환 서비스에 연결하지 못했습니다. Silo의 Jellyfin 호환 설정에 있는 공개 URL이 이 기기에서 접근할 수 있는 주소인지 확인하세요."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Lume entrou no Silo, mas não conseguiu acessar o serviço de compatibilidade com Jellyfin. Verifique se a URL pública nas configurações de compatibilidade com Jellyfin do Silo é um endereço que este dispositivo consegue acessar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lume 已登录 Silo，但无法连接其 Jellyfin 兼容服务。请确认 Silo 的 Jellyfin 兼容设置中的公共 URL 是此设备可以访问的地址。"
           }
         }
       }
@@ -52066,6 +52172,112 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已登录"
+          }
+        }
+      }
+    },
+    "Silo Server" : {
+      "comment" : "Label for the kind of a Silo playlist.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silo-Server"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Servidor Silo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serveur Silo"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server Silo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siloサーバー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silo 서버"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Servidor Silo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silo 服务器"
+          }
+        }
+      }
+    },
+    "Silo's Jellyfin compatibility is waiting for a server restart. Restart Silo and try again." : {
+      "comment" : "Error when a Silo server's Jellyfin-compatible service needs a restart before it runs.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Jellyfin-Kompatibilität von Silo wartet auf einen Neustart des Servers. Starte Silo neu und versuche es erneut."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La compatibilidad con Jellyfin de Silo está esperando a que se reinicie el servidor. Reinicia Silo e inténtalo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La compatibilité Jellyfin de Silo attend un redémarrage du serveur. Redémarrez Silo et réessayez."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La compatibilità Jellyfin di Silo è in attesa di un riavvio del server. Riavvia Silo e riprova."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SiloのJellyfin互換機能はサーバーの再起動待ちです。Siloを再起動してからもう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silo의 Jellyfin 호환 기능이 서버 재시작을 기다리고 있습니다. Silo를 재시작한 후 다시 시도하세요."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A compatibilidade com Jellyfin do Silo está aguardando a reinicialização do servidor. Reinicie o Silo e tente novamente."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silo 的 Jellyfin 兼容功能正在等待服务器重启。请重启 Silo 后重试。"
           }
         }
       }
