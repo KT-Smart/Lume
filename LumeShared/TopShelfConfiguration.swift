@@ -15,7 +15,6 @@ nonisolated struct TopShelfConfiguration: Codable, Equatable {
     /// be renamed once shipped.
     nonisolated enum Section: String, Codable, CaseIterable {
         case continueWatching
-        case onNow
         case favorites
     }
 
@@ -49,4 +48,17 @@ nonisolated struct TopShelfConfiguration: Codable, Equatable {
         sections: Section.allCases,
         itemsPerSection: 10
     )
+}
+
+extension TopShelfConfiguration {
+    /// Skips section names it doesn't know instead of failing — a snapshot
+    /// written by an older or newer build must still load. (`onNow` was a
+    /// section until it was dropped for duplicating the favorite channels.)
+    nonisolated init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        isEnabled = try container.decode(Bool.self, forKey: .isEnabled)
+        style = try container.decode(Style.self, forKey: .style)
+        sections = try container.decode([String].self, forKey: .sections).compactMap(Section.init(rawValue:))
+        itemsPerSection = try container.decode(Int.self, forKey: .itemsPerSection)
+    }
 }

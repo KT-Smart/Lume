@@ -3,7 +3,7 @@
 //  LumeTopShelf
 //
 //  The tvOS Top Shelf — the marquee row above the app icon on the Apple TV
-//  home screen. Mirrors the widgets: Continue Watching, On Now and Favorites
+//  home screen: Continue Watching and Favorites
 //  from the shared snapshot the app exports, shown, ordered and sized the way
 //  the user set it up in Settings › Home (`TopShelfConfiguration`). Selecting
 //  an item deep-links into the app via `lume://`. The system fetches poster
@@ -68,7 +68,6 @@ private struct TopShelfSection {
     var title: String {
         switch kind {
         case .continueWatching: String(localized: "Continue Watching", comment: "Top Shelf section")
-        case .onNow: String(localized: "On Now", comment: "Top Shelf section")
         case .favorites: String(localized: "Favorites", comment: "Top Shelf section")
         }
     }
@@ -79,7 +78,6 @@ private struct TopShelfSection {
         configuration.sections.compactMap { kind in
             let entries: [Entry] = switch kind {
             case .continueWatching: snapshot.continueWatching.map(Entry.init(media:))
-            case .onNow: snapshot.onNow.map(Entry.init(channel:))
             case .favorites: snapshot.favorites.map(Entry.init(media:))
             }
             let capped = Array(entries.prefix(configuration.itemsPerSection))
@@ -127,25 +125,9 @@ private extension TopShelfSection.Entry {
         )
     }
 
-    init(channel: WidgetChannelNow) {
-        self.init(
-            id: "live-\(channel.id)",
-            title: channel.channelName,
-            summary: channel.nowTitle,
-            posterURL: channel.logoURL,
-            backdropURL: nil,
-            isChannel: true,
-            progress: nil,
-            deepLink: channel.deepLink
-        )
-    }
-
-    /// A channel shows its rendered `tile` — the raw logo would be stretched
-    /// across the card — and no artwork at all when rendering failed.
     func sectionedItem(identifier: String, tile: URL?) -> TVTopShelfSectionedItem {
         let item = TVTopShelfSectionedItem(identifier: identifier)
-        // A channel with guide data reads "News 24 — Evening News".
-        item.title = isChannel ? [title, summary].compactMap(\.self).joined(separator: " — ") : title
+        item.title = title
         item.imageShape = isChannel ? .square : .poster
         if let imageURL = isChannel ? tile : posterURL {
             item.setImageURL(imageURL, for: [.screenScale1x, .screenScale2x])

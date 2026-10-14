@@ -128,7 +128,6 @@ import SwiftUI
         var title: LocalizedStringKey {
             switch self {
             case .continueWatching: "Continue Watching"
-            case .onNow: "On Now"
             case .favorites: "Favorites"
             }
         }
@@ -136,7 +135,6 @@ import SwiftUI
         var displayName: String {
             switch self {
             case .continueWatching: String(localized: "Continue Watching")
-            case .onNow: String(localized: "On Now")
             case .favorites: String(localized: "Favorites")
             }
         }
@@ -144,7 +142,6 @@ import SwiftUI
         var systemImage: String {
             switch self {
             case .continueWatching: "clock.arrow.circlepath"
-            case .onNow: "antenna.radiowaves.left.and.right"
             case .favorites: "star"
             }
         }

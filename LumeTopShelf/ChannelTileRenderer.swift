@@ -37,7 +37,7 @@ enum ChannelTileRenderer {
     static func tiles(for channels: [Channel]) async -> [String: URL] {
         guard let directory else { return [:] }
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        // A favorite channel can also be on air in On Now: render it once.
+        // The same channel can appear more than once: render it once.
         let unique = Dictionary(channels.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first }).values
         let tiles = await withTaskGroup(of: (String, URL?).self) { group in
             for channel in unique {

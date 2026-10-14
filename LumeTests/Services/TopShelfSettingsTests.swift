@@ -19,27 +19,27 @@ struct TopShelfSettingsTests {
         defaults.set("carousel", forKey: TopShelfSettings.styleKey)
         defaults.set(20, forKey: TopShelfSettings.itemsPerSectionKey)
         defaults.set("favorites,continueWatching", forKey: TopShelfSettings.sectionOrderKey)
-        defaults.set("continueWatching", forKey: TopShelfSettings.disabledSectionsKey)
+        defaults.set("favorites", forKey: TopShelfSettings.disabledSectionsKey)
 
         let configuration = TopShelfSettings.configuration(defaults: defaults)
         #expect(!configuration.isEnabled)
         #expect(configuration.style == .carousel)
         #expect(configuration.itemsPerSection == 20)
-        // The stored order first, the missing section appended, the switched-off
-        // one dropped.
-        #expect(configuration.sections == [.favorites, .onNow])
+        // The stored order, minus the switched-off section.
+        #expect(configuration.sections == [.continueWatching])
     }
 
     @Test func `unknown stored values fall back`() throws {
         let defaults = try makeDefaults()
         defaults.set("mosaic", forKey: TopShelfSettings.styleKey)
         defaults.set(7, forKey: TopShelfSettings.itemsPerSectionKey)
-        defaults.set("bogus,onNow,onNow", forKey: TopShelfSettings.sectionOrderKey)
+        defaults.set("bogus,favorites,favorites", forKey: TopShelfSettings.sectionOrderKey)
 
         let configuration = TopShelfSettings.configuration(defaults: defaults)
         #expect(configuration.style == .sectioned)
         #expect(configuration.itemsPerSection == TopShelfConfiguration.default.itemsPerSection)
-        #expect(configuration.sections == [.onNow, .continueWatching, .favorites])
+        // Unknown and repeated names dropped, the missing section appended.
+        #expect(configuration.sections == [.favorites, .continueWatching])
     }
 
     @Test func `the snapshot carries enough items for the largest section`() {
@@ -57,5 +57,17 @@ struct TopShelfSettingsTests {
         let snapshot = try decoder.decode(WidgetSnapshot.self, from: Data(json.utf8))
         #expect(snapshot.topShelf == nil)
         #expect(snapshot.continueWatching.first?.backdropURL == nil)
+    }
+
+    @Test func `a snapshot naming a section this build doesn't know still decodes`() throws {
+        let json = """
+        {"generatedAt":"2026-01-01T00:00:00Z","favorites":[],"onNow":[],"continueWatching":[],
+         "topShelf":{"isEnabled":true,"style":"sectioned","itemsPerSection":10,
+                     "sections":["continueWatching","onNow","favorites"]}}
+        """
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let snapshot = try decoder.decode(WidgetSnapshot.self, from: Data(json.utf8))
+        #expect(snapshot.topShelf?.sections == [.continueWatching, .favorites])
     }
 }
