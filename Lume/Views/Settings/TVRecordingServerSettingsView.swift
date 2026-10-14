@@ -10,9 +10,8 @@
 //  the tab bar and strand remote focus.
 //
 //  Each step a button opens hands focus to the new step's first control with a
-//  deferred `@FocusState` write. Focus is never moved on appear: the pane
-//  renders while the sidebar holds focus, and taking it there would pull focus
-//  out of the sidebar as the user scrolls past this category.
+//  deferred `@FocusState` write. Menu in the pairing step backs out to the
+//  pane's top level, as Cancel does; at the top level SettingsView takes it.
 //
 
 #if os(tvOS)
@@ -21,8 +20,7 @@
     import SwiftUI
 
     /// Where the pane is drilled in to; `nil` is its top level. Owned by
-    /// SettingsView, which clears it when focus returns to the sidebar, like
-    /// its other drill-ins.
+    /// SettingsView, which clears it with its other drill-ins.
     enum TVRecordingServerRoute: Hashable {
         /// Typing the address of a server Bonjour didn't find.
         case manualAddress
@@ -78,9 +76,9 @@
                         self.route = nil
                         moveFocus(to: .testConnection)
                     } onCancel: {
-                        self.route = nil
-                        moveFocus(to: configService.activeServer == nil ? setupFocus : .testConnection)
+                        cancelPairing()
                     }
+                    .onExitCommand(perform: cancelPairing)
                 } else if let server = configService.activeServer {
                     // Also for a lapsed subscriber, who must still be able to
                     // remove it.
@@ -122,6 +120,11 @@
 
         /// Defers the write past the render that inserts the target, which
         /// would otherwise drop it.
+        private func cancelPairing() {
+            route = nil
+            moveFocus(to: configService.activeServer == nil ? setupFocus : .testConnection)
+        }
+
         private func moveFocus(to target: TVRecordingServerFocus) {
             Task { @MainActor in focus = target }
         }

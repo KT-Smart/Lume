@@ -70,14 +70,14 @@ import SwiftUI
                 // technical setup touched once.
                 VStack(alignment: .leading, spacing: 8) {
                     TVSettingsSectionLabel("Languages")
-                    tvDrillInRow("Audio Languages") { preferredLanguagePane = .list }
+                    tvDrillInRow("Audio Languages", opens: .audioLanguages) { preferredLanguagePane = .list }
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
                     TVSettingsSectionLabel("Subtitles")
-                    tvDrillInRow("Subtitle Style") { showingSubtitleStyle = true }
+                    tvDrillInRow("Subtitle Style", opens: .subtitleStyle) { showingSubtitleStyle = true }
                     if OpenSubtitlesService.shared.isConfigured {
-                        tvDrillInRow(label: Text(verbatim: "OpenSubtitles")) { showingOpenSubtitles = true }
+                        tvDrillInRow(label: Text(verbatim: "OpenSubtitles"), opens: .openSubtitles) { showingOpenSubtitles = true }
                     }
                 }
 
@@ -125,7 +125,7 @@ import SwiftUI
                 VStack(alignment: .leading, spacing: 8) {
                     TVSettingsSectionLabel("Advanced")
 
-                    tvDrillInRow("Engines") { showingEngines = true }
+                    tvDrillInRow("Engines", opens: .engines) { showingEngines = true }
 
                     TVOptionCycleRow(
                         title: "External Player",
@@ -185,7 +185,9 @@ import SwiftUI
                     TVSettingsSectionLabel("Options")
                     VStack(spacing: 2) {
                         ForEach([PlayerEngineKind.ksPlayer, .vlcKit, .lumeEngine]) { engine in
-                            tvDrillInRow(label: Text(verbatim: engine.displayName)) { selectedEngineOptions = engine }
+                            tvDrillInRow(label: Text(verbatim: engine.displayName), opens: .engineOptions(engine)) {
+                                selectedEngineOptions = engine
+                            }
                         }
                     }
                     Text("AVPlayer has no configurable options.")
@@ -199,12 +201,16 @@ import SwiftUI
         }
 
         /// A row that replaces the current detail with a deeper one in place.
-        /// Returning focus to the sidebar (Menu) restores the top level.
-        private func tvDrillInRow(_ title: LocalizedStringKey, action: @escaping () -> Void) -> some View {
-            tvDrillInRow(label: Text(title), action: action)
+        /// Menu there comes back to this row (`opens`).
+        private func tvDrillInRow(
+            _ title: LocalizedStringKey,
+            opens drillIn: TVSettingsDrillIn,
+            action: @escaping () -> Void
+        ) -> some View {
+            tvDrillInRow(label: Text(title), opens: drillIn, action: action)
         }
 
-        private func tvDrillInRow(label: Text, action: @escaping () -> Void) -> some View {
+        private func tvDrillInRow(label: Text, opens drillIn: TVSettingsDrillIn, action: @escaping () -> Void) -> some View {
             Button(action: action) {
                 HStack(spacing: 16) {
                     label
@@ -215,6 +221,7 @@ import SwiftUI
                 }
             }
             .buttonStyle(TVSettingsRowButtonStyle())
+            .focused($drillInFocus, equals: drillIn)
         }
 
         /// One row of the tvOS engine-priority list: the engine name, a "Primary"
@@ -313,6 +320,7 @@ import SwiftUI
                         }
                     }
                     .buttonStyle(TVSettingsRowButtonStyle())
+                    .focused($drillInFocus, equals: .addLanguage)
 
                     Text(tvPreferredLanguageFooter)
                         .font(.system(size: 20))

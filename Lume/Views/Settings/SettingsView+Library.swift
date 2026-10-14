@@ -146,6 +146,7 @@ extension PlaylistTab {
                         }
                     }
                     .buttonStyle(TVSettingsRowButtonStyle())
+                    .focused($drillInFocus, equals: .contentManagement)
                     .disabled(activePlaylist == nil)
                     Text("Hide and reorder categories and channels for the active playlist.")
                         .font(.system(size: 20))

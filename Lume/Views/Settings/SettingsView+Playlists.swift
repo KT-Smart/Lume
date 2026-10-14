@@ -218,6 +218,7 @@ import SwiftUI
                     Image(systemName: "pencil")
                 }
                 .buttonStyle(TVContentIconButtonStyle())
+                .focused($drillInFocus, equals: .playlist(playlist.id))
                 .accessibilityLabel("Edit \(playlist.name)")
             }
         }

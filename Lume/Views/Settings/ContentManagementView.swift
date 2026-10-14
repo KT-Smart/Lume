@@ -244,13 +244,9 @@ struct ContentManagementView: View {
 
                         tvCategoryList(proxy: proxy)
                     }
-                    .frame(maxWidth: TVSettingsMetrics.detailMaxWidth, alignment: .leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 48)
-                    .padding(.vertical, 72)
+                    .tvSettingsPaneContent()
                 }
             }
-            .tvSettingsBackground()
         }
 
         private var tvTypePicker: some View {
