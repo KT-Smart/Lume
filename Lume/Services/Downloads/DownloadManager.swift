@@ -183,7 +183,7 @@ final class DownloadManager: NSObject {
         // m3u and media-server episodes carry their playback URL on the row;
         // the Xtream/Stalker builders have nothing to build from.
         let carriesDirectURL = switch playlist.sourceType {
-        case .m3u, .jellyfin, .emby, .plex: true
+        case .m3u, .jellyfin, .emby, .plex, .silo: true
         case .xtream, .stalker, .webdav: false
         }
         let directURL = carriesDirectURL ? episode.directSource.flatMap(URL.init(string:)) : nil

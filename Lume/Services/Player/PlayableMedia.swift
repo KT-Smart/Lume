@@ -134,13 +134,13 @@ nonisolated extension PlayableMedia {
         return ["Authorization": "Basic \(token)"]
     }
 
-    /// The session-token header a Jellyfin or Emby server needs at playback
+    /// The session-token header a Jellyfin, Emby or Silo server needs at playback
     /// time. The stored stream URLs are token-free on purpose (see the
     /// property comment), so the session authenticates the request instead.
     /// `nil` before the playlist's first sync, which is what issues the
     /// session.
     private static func jellyfinHeaders(for playlist: Playlist) -> [String: String]? {
-        guard playlist.sourceType == .jellyfin || playlist.sourceType == .emby else { return nil }
+        guard MediaServerFlavor(sourceType: playlist.sourceType) != nil else { return nil }
         return JellyfinClient.playbackHeaders(token: playlist.jellyfinAccessToken)
     }
 
@@ -223,7 +223,7 @@ nonisolated extension PlayableMedia {
         case .stalker:
             guard let cmd = episode.directSource, let placeholder = StalkerLink.placeholder(type: .vod, cmd: cmd) else { return nil }
             url = placeholder
-        case .m3u, .webdav, .jellyfin, .emby, .plex:
+        case .m3u, .webdav, .jellyfin, .emby, .plex, .silo:
             guard let resolved = episode.directSource.flatMap(URL.init(string:)) else { return nil }
             url = resolved
         case .xtream:
@@ -363,7 +363,7 @@ nonisolated extension PlayableMedia {
         guard isCatchupCapable(stream: stream) else { return nil }
         let url: URL
         switch playlist.sourceType {
-        case .stalker, .webdav, .jellyfin, .emby, .plex:
+        case .stalker, .webdav, .jellyfin, .emby, .plex, .silo:
             return nil
         case .m3u:
             // The **raw** `directURL`, deliberately not put through
