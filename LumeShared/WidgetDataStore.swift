@@ -18,10 +18,21 @@ nonisolated enum WidgetDataStore {
 
     private static let snapshotFilename = "widget-snapshot.json"
 
+    /// tvOS lets an app write only to `Library/Caches` — in the shared
+    /// container too; a write to its root fails on a real Apple TV (the
+    /// simulator doesn't enforce it). The system may purge Caches, which only
+    /// empties the Top Shelf until the app's next launch or backgrounding
+    /// rewrites the file.
     static var snapshotURL: URL? {
-        FileManager.default
-            .containerURL(forSecurityApplicationGroupIdentifier: appGroupID)?
-            .appendingPathComponent(snapshotFilename)
+        guard let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID) else {
+            return nil
+        }
+        #if os(tvOS)
+            let directory = container.appendingPathComponent("Library/Caches", isDirectory: true)
+        #else
+            let directory = container
+        #endif
+        return directory.appendingPathComponent(snapshotFilename)
     }
 
     static func load() -> WidgetSnapshot? {
@@ -31,11 +42,17 @@ nonisolated enum WidgetDataStore {
         return try? decoder.decode(WidgetSnapshot.self, from: data)
     }
 
+    /// Throws `CocoaError(.fileNoSuchFile)` when the App Group container is
+    /// unavailable — a missing entitlement, which must not pass silently.
     static func save(_ snapshot: WidgetSnapshot) throws {
-        guard let url = snapshotURL else { return }
+        guard let url = snapshotURL else { throw CocoaError(.fileNoSuchFile) }
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         let data = try encoder.encode(snapshot)
+        try FileManager.default.createDirectory(
+            at: url.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
         try data.write(to: url, options: .atomic)
     }
 }

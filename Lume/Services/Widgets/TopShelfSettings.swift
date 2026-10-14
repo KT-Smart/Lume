@@ -11,6 +11,7 @@
 //
 
 import Foundation
+import OSLog
 #if os(tvOS)
     import TVServices
 #endif
@@ -45,7 +46,12 @@ nonisolated enum TopShelfSettings {
     static func apply(defaults: UserDefaults = .standard) {
         var snapshot = WidgetDataStore.load() ?? .empty
         snapshot.topShelf = configuration(defaults: defaults)
-        try? WidgetDataStore.save(snapshot)
+        do {
+            try WidgetDataStore.save(snapshot)
+        } catch {
+            Logger.database.error("Top Shelf settings not saved: \(error.localizedDescription, privacy: .public)")
+            return
+        }
         #if os(tvOS)
             TVTopShelfContentProvider.topShelfContentDidChange()
         #endif
