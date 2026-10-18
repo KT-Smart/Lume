@@ -545,7 +545,7 @@ enum DetailFormat {
 
 #Preview("GlassIconButton") {
     HStack(spacing: 12) {
-        GlassIconButton(systemImage: "chevron.left", accessibilityLabel: "Back", action: {})
+        GlassIconButton(systemImage: "chevron.backward", accessibilityLabel: "Back", action: {})
         GlassIconButton(systemImage: "heart", accessibilityLabel: "Favorite", action: {})
         GlassIconButton(systemImage: "checkmark.circle", accessibilityLabel: "Watched", action: {})
     }
