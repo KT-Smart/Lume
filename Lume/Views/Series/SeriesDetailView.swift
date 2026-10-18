@@ -342,7 +342,7 @@ struct SeriesDetailView: View {
     private var toolbarContent: some ToolbarContent {
         #if os(iOS)
             ToolbarItem(placement: .topBarLeading) {
-                GlassIconButton(systemImage: "chevron.left", accessibilityLabel: "Back") {
+                GlassIconButton(systemImage: "chevron.backward", accessibilityLabel: "Back") {
                     dismiss()
                 }
             }
