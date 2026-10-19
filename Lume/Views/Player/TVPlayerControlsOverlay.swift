@@ -370,19 +370,21 @@
             .disabled(!enabled)
         }
 
-        // MARK: - Trailing controls (audio / subtitles / sources / favorite / record)
+        // MARK: - Trailing controls (audio / subtitles / sources / quality / favorite / record)
 
         private var trailingControls: some View {
             HStack(spacing: 16) {
                 audioTrackMenu
                 subtitleMenu
                 sourcesButton
+                qualityButton
                 if PlayerFavorites.supportsFavorites(media.contentRef) {
                     favoriteButton
                 }
                 recordButton
             }
             .tvPlayerRecordFocusHandoff(media: media, focus: $focus)
+            .tvPlayerQualityFocusHandoff(media: media, focus: $focus)
         }
 
         /// Icon-only heart sitting alongside the track menus, rendered in the

@@ -263,6 +263,7 @@ struct FullScreenPlayerView: View {
         .macPlayerWindow(activeMedia: activeMedia, launchMedia: media) { switchMedia(to: $0) }
         .playerRecording(for: activeMedia)
         .modifier(PlayerSourceSwitcherHost(session: sourceSession, media: activeMedia, onPick: switchSource))
+        .modifier(PlayerQualityVariantsHost(media: activeMedia, onSelect: switchQuality))
         // Synchronous on purpose, and ahead of the `.task` below: the engine
         // coordinators report `beginStartup` / `noteEngineFallback` from their
         // own appearance, and an async baseline can land after them — which
@@ -542,7 +543,7 @@ struct FullScreenPlayerView: View {
         if persistRecordingProgress() { return }
         guard let writer = progressWriter else { return }
         if activeMedia.isLive, !force { return }
-        let ref = activeMedia.contentRef
+        let ref = activeMedia.historyRef
         // An explicit "next episode" already settled this stream at its full
         // duration. Recording the position it was skipped from would walk that
         // back to unwatched, so the completion stands and this flush stands down.

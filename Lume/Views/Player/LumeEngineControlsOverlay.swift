@@ -271,6 +271,7 @@ import SwiftUI
                     favoriteButton
                 }
                 PlayerSourcesButton(onResetHideTimer: onResetHideTimer)
+                PlayerQualityButton(onResetHideTimer: onResetHideTimer)
                 PlayerRecordButton(media: media, onResetHideTimer: onResetHideTimer)
                 PlayerVolumeControl(onResetHideTimer: onResetHideTimer)
             }
