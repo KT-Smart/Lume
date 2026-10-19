@@ -129,7 +129,7 @@ adapted per size class
 - Browse channels by category with logos and **EPG** data (now & next)
 - Full **program guide** with a scrollable timeline
 - **Custom EPG sources**: add external XMLTV feeds, refresh the guide on its own schedule, and sync manually — managed separately from playlist content
-- Catchup / time-shift support
+- **Catchup / time-shift** on both **Xtream Codes** (`tv_archive`) and **M3U/M3U8** playlists — M3U channels are picked up from their `catchup` / `catchup-type` attributes, covering the `flussonic` (and `flussonic-hls` / `fs`), `append`, `default` / `shift` (`catchup-source` template expansion), and `xc` schemes
 - **Multi-View**: watch up to four channels at once in a 2 / 3 / 2×2 grid, with the audio on whichever tile you pick. Each tile can come from a different playlist, which helps if your provider allows only one connection per account (two tiles on the same account still need two connections)
 - Channel zapping with recently-watched history
 - **In-player channel browser** on tvOS (left-press overlay with category/channel grid)
@@ -161,6 +161,8 @@ adapted per size class
 - **Immersive full-screen tvOS home** with TMDB backdrop, crossfading hero, and fold-based scroll snapping
 - Continue Watching, Favorites, Recently Watched, and Trending rails
 - **For You** rail — on-device recommendations from your watch history and favorites; thumbs-up / thumbs-down a suggestion to tune what you see next, with your votes syncing across devices via iCloud (can be turned off in Settings)
+- **Home Screen widgets** (iPhone/iPad) — Continue Watching, Favorites, and On Now (EPG for favorite channels), each deep-linking straight into playback
+- **tvOS Top Shelf** — Continue Watching and Favorites above the app icon, as poster rows or a backdrop carousel, configurable in Settings › Home
 
 #### 🔎 Discovery & organization
 - Global search across Movies, Series, and Live channels with type filtering
@@ -177,6 +179,7 @@ adapted per size class
 - **Next Up** overlay with auto-play for series episodes
 - **Skip Intro / Recap** overlay during playback, powered by IntroDB skip windows
 - **OpenSubtitles** search from the player's subtitle menu — find and load an external subtitle track for any movie or episode whose stream ships without one
+- **Subtitle styles** — size, font, colour, background box, edge and position, with a live preview in Settings › Player › Subtitle Style (KSPlayer, Lume Engine and AVPlayer; VLCKit follows the size)
 - Optional **Trakt** scrobbling — plus one-tap import of your existing Trakt watched history — and **TMDB** metadata enrichment
 - Optional **Simkl** scrobbling via the OAuth 2.0 device flow, with watched-history import on connect and the manual re-import for later
 - **Clear watch history** from Settings to reset progress, watched markers, and last-watched dates across all content
@@ -196,6 +199,7 @@ adapted per size class
 - Media-server support: enter one URL and Lume auto-detects the kind —
   - **Jellyfin** and **Emby**: movie and TV-show libraries with artwork, ratings and plot; username + password, session-token auth. Titles with several versions (a server's multiple files, or AIOStreams' aggregated streams) open a source picker before playback, and shows that are only listed per show (AIOStreams) load their episodes when opened
   - **Plex**: movie and TV-show sections with artwork, ratings and plot; sign in with your Plex account, paste an `X-Plex-Token`, or connect token-free to a server that allows unauthenticated local access
+  - **Silo**: enter the address you open Silo at; Lume signs in, finds Silo's Jellyfin-compatible service and syncs through it like a Jellyfin server (the server's Jellyfin compatibility must be turned on)
   - **WebDAV**: recursive folder walk, filenames parsed into movies and series; Basic auth, anonymous shares welcome
   - None of them carries live TV yet, and none downloads yet
 - Server info at a glance: status, active connections, expiry
@@ -274,6 +278,7 @@ Lume follows a clean, layered SwiftUI architecture:
 │    ├─ WebDAVClient        WebDAV share walk (PROPFIND)    │
 │    ├─ JellyfinClient      Jellyfin/Emby libraries         │
 │    ├─ PlexClient          Plex sections + X-Plex-Token    │
+│    ├─ SiloClient          Silo sign-in + compat discovery │
 │    ├─ TMDBClient          metadata / artwork enrichment   │
 │    ├─ MDBListClient       aggregator ratings (IMDb, RT, …)│
 │    ├─ TraktService        OAuth device flow + scrobbling  │
@@ -295,7 +300,7 @@ Lume follows a clean, layered SwiftUI architecture:
 - **Playback** — VLCKit · KSPlayer (FFmpegKit) · AVPlayer · LumeEngine (FFmpeg 9, beta)
 - **Networking** — `URLSession` with typed endpoints, retry/backoff, and error classification
 - **Integrations** — TMDB (metadata), MDBList (ratings), Trakt & Simkl (device OAuth + scrobbling), OpenSubtitles (external subtitle tracks)
-- **Localization** — 9 languages via String Catalogs (English, German, French, Spanish, Italian, Portuguese, Japanese, Korean, Simplified Chinese)
+- **Localization** — 10 languages via String Catalogs (English, German, French, Spanish, Italian, Portuguese, Japanese, Korean, Simplified Chinese, Arabic), with right-to-left layout for Arabic
 
 **Dependencies** (Swift Package Manager)
 
@@ -344,7 +349,7 @@ The easiest way to use Lume is to [**download it from the App Store**](https://a
 ### Requirements
 
 - **Xcode 26.4** or later
-- An **Xtream Codes** account (server URL, username, password), an **M3U/M3U8 playlist URL**, a **Stalker portal** (portal URL + MAC address), or a **media server** (a Jellyfin, Emby or Plex base URL, or a WebDAV folder URL — credentials depend on the server)
+- An **Xtream Codes** account (server URL, username, password), an **M3U/M3U8 playlist URL**, a **Stalker portal** (portal URL + MAC address), or a **media server** (a Jellyfin, Emby, Plex or Silo base URL, or a WebDAV folder URL — credentials depend on the server)
 - *(Optional)* a [TMDB](https://www.themoviedb.org/settings/api) API access token for metadata enrichment
 - *(Optional)* a [Trakt](https://trakt.tv/oauth/applications) application for scrobbling
 - *(Optional)* a [Simkl](https://simkl.com/settings/developer/new/) application for scrobbling (OAuth V2 — "TV, devices & command line" registration needs only the client id)

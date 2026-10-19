@@ -3,7 +3,7 @@
 //  Lume
 //
 //  The iOS / macOS / visionOS Player page — everyday playback options first,
-//  then audio languages, OpenSubtitles, the stream-information caption, and under Advanced the
+//  then audio languages, subtitle style and OpenSubtitles, the stream-information caption, and under Advanced the
 //  engine priority and the external-player hand-off — plus the Engines page
 //  behind it. tvOS builds its own pane in SettingsView+TVPlayer.
 //
@@ -19,6 +19,8 @@
         private var showSkipIntroButton = PlayerSettings.Playback.showSkipIntroButtonDefault
         @AppStorage(PlayerSettings.Playback.chooseSourceBeforePlayingKey)
         private var chooseSourceBeforePlaying = PlayerSettings.Playback.chooseSourceBeforePlayingDefault
+        @AppStorage(PlayerSettings.Playback.rotateToLandscapeKey)
+        private var rotateToLandscape = PlayerSettings.Playback.rotateToLandscapeDefault
         @AppStorage(PlayerSettings.StreamInfo.enabledKey)
         private var streamInfoEnabled = PlayerSettings.StreamInfo.enabledDefault
         @AppStorage(PlayerSettings.StreamInfo.detailLevelKey)
@@ -36,15 +38,32 @@
             StreamInfoDetailLevel(rawValue: streamInfoDetailLevelRaw) ?? PlayerSettings.StreamInfo.detailLevelDefault
         }
 
+        /// iPhone only, like the lock itself — see `PlayerOrientationLock`.
+        private var showsRotateToLandscape: Bool {
+            #if os(iOS)
+                UIDevice.current.userInterfaceIdiom == .phone
+            #else
+                false
+            #endif
+        }
+
         var body: some View {
             List {
                 Section {
+                    if showsRotateToLandscape {
+                        Toggle("Rotate to Landscape", isOn: $rotateToLandscape)
+                    }
                     premiumToggle("Autoplay Next Episode", isOn: $autoPlayNext)
                     premiumToggle("Show Skip Intro Button", isOn: $showSkipIntroButton)
                 } header: {
                     Text("Playback")
                 } footer: {
-                    Text("Automatically start the next episode when one finishes.")
+                    VStack(alignment: .leading, spacing: 6) {
+                        if showsRotateToLandscape {
+                            Text("Turns your iPhone to landscape when a video starts, and back to portrait when the player closes.")
+                        }
+                        Text("Automatically start the next episode when one finishes.")
+                    }
                 }
 
                 // Free, like the stream caption below.
@@ -62,8 +81,10 @@
                     Text("Languages")
                 }
 
-                if openSubtitles.isConfigured {
-                    Section {
+                Section {
+                    NavigationLink("Subtitle Style") { SubtitleStyleSettingsView() }
+
+                    if openSubtitles.isConfigured {
                         NavigationLink {
                             OpenSubtitlesIntegrationView()
                         } label: {
@@ -76,9 +97,11 @@
                                 }
                             }
                         }
-                    } header: {
-                        Text("Subtitles")
-                    } footer: {
+                    }
+                } header: {
+                    Text("Subtitles")
+                } footer: {
+                    if openSubtitles.isConfigured {
                         Text("Download subtitles for anything that ships without them.")
                     }
                 }
@@ -221,7 +244,7 @@
                             HStack {
                                 Text(kind.displayName)
                                 Spacer()
-                                Image(systemName: "chevron.right")
+                                Image(systemName: "chevron.forward")
                                     .font(.footnote.weight(.semibold))
                                     .foregroundStyle(.tertiary)
                             }

@@ -42,10 +42,9 @@ struct EPGChannelCell: View {
                 .lineLimit(metrics.channelNameLineLimit)
                 .frame(maxWidth: .infinity, alignment: .leading)
             if row.catchupCapable {
-                Image(systemName: "clock.arrow.circlepath")
+                CatchupBadge(days: nil)
                     .font(metrics.catchupGlyphFont)
                     .foregroundStyle(isHub ? EPGColors.cardText : LiveTVPalette.accent)
-                    .accessibilityLabel(Text("Catch-up available"))
             }
         }
         .padding(.horizontal, metrics.channelCellPadding)

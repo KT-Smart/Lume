@@ -48,6 +48,16 @@ nonisolated enum CreditsInfo {
         Library(name: "VLCKit", license: "LGPL v2.1", urlString: "https://code.videolan.org/videolan/VLCKit")
     ]
 
+    // MARK: - Sample footage
+
+    /// The film the Subtitle Style preview takes its still from. Its CC BY 3.0
+    /// licence requires this attribution.
+    static let sampleFootage = Library(
+        name: "Big Buck Bunny",
+        license: "CC BY 3.0",
+        urlString: "https://peach.blender.org"
+    )
+
     // MARK: - Contributors
 
     /// A person who contributed to Lume outside the codebase (artwork, design,

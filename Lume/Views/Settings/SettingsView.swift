@@ -53,8 +53,6 @@ struct SettingsView: View {
         var showNextEpisodeButton = PlayerSettings.Playback.showNextEpisodeButtonDefault
         @AppStorage(PlayerSettings.Playback.showSkipIntroButtonKey)
         var showSkipIntroButton = PlayerSettings.Playback.showSkipIntroButtonDefault
-        @AppStorage(PlayerSettings.Playback.chooseSourceBeforePlayingKey)
-        var chooseSourceBeforePlaying = PlayerSettings.Playback.chooseSourceBeforePlayingDefault
         /// Comma-separated preferred languages, empty meaning no preference (see `PreferredLanguageList`).
         @AppStorage(PlayerSettings.Language.preferredAudioLanguagesKey)
         var preferredAudioLanguagesRaw = PlayerSettings.Language.preferredAudioLanguagesDefault
@@ -72,11 +70,18 @@ struct SettingsView: View {
         @Environment(PlaylistSwitchModel.self) var playlistSwitch: PlaylistSwitchModel?
         /// Not `private`: the Add Playlist row (SettingsView+Playlists) presents it.
         @State var showingAddPlaylist = false
-        /// The category whose content is shown in the right pane. Follows focus
-        /// in the sidebar (Apple TV Settings behaviour) and persists once focus
-        /// moves into the detail pane.
+        /// The category whose content is shown in the right pane. Changes only
+        /// when a rail row is activated (Live TV's model): moving focus through
+        /// the rail just highlights.
         @State private var selectedCategory: SettingsCategory = .profiles
-        @FocusState private var focusedCategory: SettingsCategory?
+        /// Bumped to hand focus to the rail's selected category — Menu from a
+        /// pane's top level, or the tab-bar entry catcher.
+        @State private var railFocusRequest = 0
+        /// Bumped as activating a category sends focus into its pane, so the
+        /// rail keeps it should the pane have nothing to focus (iCloud, About).
+        @State private var paneFocusRequest = 0
+        /// Whether focus is settled in the rail, for the tab-bar entry catcher.
+        @State private var railFocused = false
         /// The playlist drilled into within the Playlists category. When set, its
         /// settings replace the playlist list *in the detail pane* rather than
         /// pushing a full-screen view — a push hides the header tab bar and
@@ -90,21 +95,18 @@ struct SettingsView: View {
         /// Focus handle on the Content Management pane, written once the pane
         /// has replaced the Library detail (see `beginContentManagementHandoff`).
         @FocusState private var contentManagementFocused: Bool
-        /// Open while Content Management is taking over the pane — the drill-in
-        /// itself, or the PIN pad giving way to it — until focus lands in it.
-        /// See `beginContentManagementHandoff`.
-        @State private var contentManagementHandoff = false
-        /// Draws the sidebar unfocused through the handoff and a beat past it.
-        /// Outlives `contentManagementHandoff` because focus leaving the sidebar
-        /// reaches `focusedCategory` a render before the row's own `isFocused`:
-        /// unmasking on that same render would flash Profiles.
-        @State private var sidebarFocusMasked = false
-        @State private var contentManagementHandoffTimeout: Task<Void, Never>?
-        @State private var sidebarFocusUnmask: Task<Void, Never>?
+        /// Where focus belongs while Content Management swaps the whole pane
+        /// in or out — the drill-in, the PIN pad giving way to it, or Menu
+        /// closing it. See `beginPaneHandoff`.
+        @State private var paneHandoff: TVSettingsPaneHandoff?
+        @State private var paneHandoffTimeout: Task<Void, Never>?
         /// Whether focus is anywhere in the detail pane. Together with
-        /// `focusedCategory` it tells whether focus is outside Settings — up in
+        /// `railFocused` it tells whether focus is outside Settings — up in
         /// the tab bar — which is when `tvTabBarEntryCatcher` takes it.
         @FocusState private var detailFocused: Bool
+        /// The rows that open a sub-page, so Menu can put focus back on the
+        /// one it leaves. Not `private`: the panes' extensions tag their rows.
+        @FocusState var drillInFocus: TVSettingsDrillIn?
         /// Whether the Player category is drilled into Engines — the priority
         /// list and the per-engine option rows — in place. Not `private`: read
         /// by the SettingsView+TVPlayer extension (separate file).
@@ -112,6 +114,9 @@ struct SettingsView: View {
         /// Whether the Player category is drilled into OpenSubtitles in place.
         /// Not `private`: set by the SettingsView+TVPlayer extension (separate file).
         @State var showingOpenSubtitles = false
+        /// Whether the Player category is drilled into Subtitle Style in place.
+        /// Not `private`: set by the SettingsView+TVPlayer extension (separate file).
+        @State var showingSubtitleStyle = false
         /// Whether the Live TV category is drilled into the Recording Server
         /// pane, in place (same reasoning as `selectedPlaylist`).
         @State private var showingRecordingServer = false
@@ -140,6 +145,8 @@ struct SettingsView: View {
         @AppStorage(HomeLayoutSettings.sectionOrderKey) var homeSectionOrderRaw = ""
         @AppStorage(HomeLayoutSettings.disabledSectionsKey) var homeDisabledSectionsRaw = ""
         @AppStorage(HomeLayoutSettings.enabledSectionsKey) var homeEnabledSectionsRaw = ""
+        @AppStorage(HomeLayoutSettings.recentlyWatchedIncludesLiveTVKey)
+        var homeRecentlyWatchedIncludesLiveTV = HomeLayoutSettings.recentlyWatchedIncludesLiveTVDefault
 
         /// The user's ordered engine fallback list (migrates the legacy single-engine
         /// key on first read). The first entry is the primary engine. Not `private`:
@@ -208,7 +215,7 @@ struct SettingsView: View {
                 } label: {
                     HStack(spacing: 8) {
                         SettingsCategoryRowLabel(category: category, value: Text("Free"))
-                        Image(systemName: "chevron.right")
+                        Image(systemName: "chevron.forward")
                             .font(.footnote.weight(.semibold))
                             .foregroundStyle(.tertiary)
                     }
@@ -283,113 +290,197 @@ struct SettingsView: View {
     extension SettingsView {
         private var tvBody: some View {
             NavigationStack {
-                HStack(spacing: 0) {
-                    tvSidebar
+                HStack(alignment: .top, spacing: TVSidebarRail.paneSpacing) {
+                    TVSidebarRail(
+                        items: railItems,
+                        selectedID: selectedCategory.id,
+                        focusRequest: railFocusRequest,
+                        focusHandOffRequest: paneFocusRequest,
+                        masksFocus: paneHandoff != nil,
+                        onFocusChange: railFocusDidChange
+                    )
                     tvDetailContainer
                         .focused($detailFocused)
+                        .onExitCommand(perform: handleDetailMenu)
                 }
                 .overlay(alignment: .top) { tvTabBarEntryCatcher }
-                .tvSettingsBackground()
-                .paywall(isPresented: $showPaywall, highlight: paywallHighlight)
-                .defaultFocus($focusedCategory, .profiles)
-                .onChange(of: focusedCategory) { _, newValue in
-                    // The sidebar landing a swap's orphaned focus, not the user
-                    // coming back to it: pass it on into Content Management.
-                    // It closes once focus has really left the sidebar again —
-                    // not when the write below lands, which runs ahead of the
-                    // engine.
-                    if contentManagementHandoff {
-                        if newValue == nil {
-                            endContentManagementHandoff()
-                        } else {
-                            Task { @MainActor in contentManagementFocused = true }
-                        }
-                        return
-                    }
-                    // Follow focus so the detail pane mirrors the highlighted
-                    // category. Ignore nil (focus moved into the detail pane),
-                    // which keeps the current selection visible.
-                    if let newValue {
-                        selectedCategory = newValue
-                        // Returning focus to the sidebar leaves any drilled-in
-                        // detail (a playlist, Categories & Channels, Engines or
-                        // an engine's options), so the pane reverts to its
-                        // top-level list.
-                        selectedPlaylist = nil
-                        showingContentManagement = false
-                        showingEngines = false
-                        showingOpenSubtitles = false
-                        showingRecordingServer = false
-                        recordingServerRoute = nil
-                        selectedEngineOptions = nil
-                        preferredLanguagePane = nil
-                    }
+                .background {
+                    TVAmbientBackground(hero: nil)
+                        .ignoresSafeArea()
                 }
+                .paywall(isPresented: $showPaywall, highlight: paywallHighlight)
                 .fullScreenCover(isPresented: $showingAddPlaylist) {
                     LoginView(isModal: true)
                 }
             }
         }
 
-        private var tvSidebar: some View {
-            VStack(alignment: .leading, spacing: 0) {
-                Text("Settings")
-                    .font(.system(size: 38, weight: .bold))
-                    .padding(.horizontal, TVSettingsMetrics.rowHPadding)
-                    .padding(.bottom, 28)
+        /// The categories in the iOS root list's order, as one ungrouped list
+        /// without icons.
+        private var railItems: [TVSidebarRailItem] {
+            SettingsCategory.visible(hasConnectedServices: hasConnectedServices).map { category in
+                TVSidebarRailItem(id: category.id, title: Text(category.title)) {
+                    activate(category)
+                }
+            }
+        }
 
-                // Groups are set apart by spacing alone; the sidebar has no
-                // headers or icons, like the Apple TV Settings app.
-                VStack(spacing: 14) {
-                    ForEach(SettingsCategory.grouped(hasConnectedServices: hasConnectedServices), id: \.group) { entry in
-                        VStack(spacing: 2) {
-                            ForEach(entry.categories) { category in
-                                Button {
-                                    selectedCategory = category
-                                } label: {
-                                    Text(category.title)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                }
-                                // Focus only passes through here during the
-                                // handoff; drawing it would flash Profiles.
-                                .buttonStyle(TVSettingsSidebarButtonStyle(
-                                    isSelected: selectedCategory == category,
-                                    suppressesFocus: sidebarFocusMasked
-                                ))
-                                .focused($focusedCategory, equals: category)
-                            }
-                        }
+        /// Opens `category` at its top level — also the open one, which backs
+        /// out of any sub-page — and moves focus into its pane.
+        private func activate(_ category: SettingsCategory) {
+            selectedCategory = category
+            closeDrillIns()
+            paneFocusRequest += 1
+            // Deferred: the pane only holds the new category's rows a render
+            // later.
+            Task { @MainActor in detailFocused = true }
+        }
+
+        private func closeDrillIns() {
+            selectedPlaylist = nil
+            showingContentManagement = false
+            showingEngines = false
+            showingOpenSubtitles = false
+            showingSubtitleStyle = false
+            showingRecordingServer = false
+            recordingServerRoute = nil
+            selectedEngineOptions = nil
+            preferredLanguagePane = nil
+        }
+
+        /// Menu in the pane backs out of the innermost sub-page onto the row
+        /// that opened it, and from a pane's top level returns to the rail.
+        private func handleDetailMenu() {
+            guard let opener = closeInnermostDrillIn() else {
+                railFocusRequest += 1
+                return
+            }
+            // Deferred: the row only exists again a render later, and a
+            // same-frame write from a Menu callback is dropped anyway.
+            Task { @MainActor in drillInFocus = opener }
+        }
+
+        /// Closes the sub-page on top and returns the row that opened it; nil
+        /// at the pane's top level. Checked in the order `tvDetail` draws
+        /// them, so the visible one closes.
+        private func closeInnermostDrillIn() -> TVSettingsDrillIn? {
+            switch selectedCategory {
+            case .playlists:
+                guard let playlist = selectedPlaylist else { return nil }
+                selectedPlaylist = nil
+                return .playlist(playlist.id)
+            case .library:
+                guard showingContentManagement else { return nil }
+                beginPaneHandoff(.drillIn(.contentManagement))
+                showingContentManagement = false
+                return .contentManagement
+            case .liveTV:
+                // The pairing step backs out to the pane's top level itself.
+                guard showingRecordingServer else { return nil }
+                showingRecordingServer = false
+                recordingServerRoute = nil
+                return .recordingServer
+            case .player:
+                return closeInnermostPlayerDrillIn()
+            default:
+                return nil
+            }
+        }
+
+        private func closeInnermostPlayerDrillIn() -> TVSettingsDrillIn? {
+            if showingOpenSubtitles {
+                showingOpenSubtitles = false
+                return .openSubtitles
+            }
+            if showingSubtitleStyle {
+                showingSubtitleStyle = false
+                return .subtitleStyle
+            }
+            if let engine = selectedEngineOptions {
+                selectedEngineOptions = nil
+                return .engineOptions(engine)
+            }
+            if showingEngines {
+                showingEngines = false
+                return .engines
+            }
+            switch preferredLanguagePane {
+            case .add:
+                preferredLanguagePane = .list
+                return .addLanguage
+            case .list:
+                preferredLanguagePane = nil
+                return .audioLanguages
+            case nil:
+                return nil
+            }
+        }
+
+        private func railFocusDidChange(_ isFocused: Bool) {
+            railFocused = isFocused
+            guard let paneHandoff else { return }
+            if isFocused {
+                // Deferred: a same-frame write from a focus callback is dropped.
+                Task { @MainActor in
+                    switch paneHandoff {
+                    case .contentManagement: contentManagementFocused = true
+                    case let .drillIn(row): drillInFocus = row
                     }
                 }
-
-                Spacer(minLength: 0)
+            } else {
+                endPaneHandoff()
             }
-            .frame(width: 320, alignment: .leading)
-            .padding(.leading, 60)
-            .padding(.trailing, 24)
-            .padding(.vertical, 72)
-            .focusSection()
+        }
+
+        /// Replacing the pane wholesale removes the focused view with the
+        /// scroll view around it — the Categories & Channels row, the PIN pad
+        /// once it unlocks, or Content Management itself on Menu — and the
+        /// engine then drops focus on the rail's selected row. The handoff
+        /// passes that focus on to `target` and, until focus has left the rail
+        /// again, draws the rail unfocused so Library never flashes. A timeout
+        /// closes it should focus never pass through the rail, so it can't
+        /// swallow the user's own later move there.
+        private func beginPaneHandoff(_ target: TVSettingsPaneHandoff) {
+            paneHandoff = target
+            paneHandoffTimeout?.cancel()
+            paneHandoffTimeout = Task { @MainActor in
+                try? await Task.sleep(for: .seconds(1))
+                guard !Task.isCancelled else { return }
+                endPaneHandoff()
+            }
+        }
+
+        /// Not `private`: the Library pane's row calls it
+        /// (SettingsView+Library).
+        func beginContentManagementHandoff() {
+            beginPaneHandoff(.contentManagement)
+        }
+
+        private func endPaneHandoff() {
+            paneHandoffTimeout?.cancel()
+            paneHandoffTimeout = nil
+            paneHandoff = nil
         }
 
         /// Pressing down from the tab bar lands on whatever sits under the
-        /// Settings tab — the detail pane's top row (Profiles' first edit
-        /// button), never the sidebar, which is far off to the left. This
-        /// invisible full-width strip across the top is nearer than any of
-        /// them, so it catches that move and hands it to the selected sidebar
-        /// category. It's focusable only while focus is outside Settings, so
-        /// moving up from the panes still reaches the tab bar.
+        /// Settings tab — the detail pane's top row, never the rail, which is
+        /// far off to the left. This invisible full-width strip across the top
+        /// is nearer than any of them, so it catches that move and hands it to
+        /// the rail's selected category. It's focusable only while focus is
+        /// outside Settings, so moving up from the panes still reaches the tab
+        /// bar.
         private var tvTabBarEntryCatcher: some View {
-            TVTabBarEntryCatcher(isEnabled: focusedCategory == nil && !detailFocused) {
-                focusedCategory = selectedCategory
+            TVTabBarEntryCatcher(isEnabled: !railFocused && !detailFocused) {
+                railFocusRequest += 1
             }
-            // Just below the tab bar, which overlaps this overlay's top
-            // by ~60 pt, and above the panes' first rows (72 pt top
-            // padding). Measured on tvOS 26.5: y ≈ 130 between a tab bar
-            // ending at 114 and the first detail row at 157.
-            .padding(.top, 77)
+            .accessibilityHidden(true)
+            // Raised into the gap between the tab bar and the screen's top,
+            // as Live TV's is: the tab bar ends at y ≈ 114 and the screen
+            // starts at 158 (tvOS 26.5), so the band sits at y ≈ 130.
+            .alignmentGuide(.top) { $0[.top] + 28 }
         }
 
-        /// Content Management brings its own scroll/background, so it replaces the
+        /// Content Management brings its own scroll view, so it replaces the
         /// detail pane wholesale rather than nesting inside the scrolling detail.
         @ViewBuilder
         private var tvDetailContainer: some View {
@@ -402,43 +493,6 @@ struct SettingsView: View {
                 .focused($contentManagementFocused)
             } else {
                 tvDetail
-            }
-        }
-
-        /// Replacing the pane wholesale removes the focused view with the
-        /// scroll view around it — the Categories & Channels row, or the PIN
-        /// pad once it unlocks — and the engine then drops focus on the
-        /// sidebar's default (Profiles). Left alone, the sidebar's focus handler
-        /// would take that for the user leaving and undo the drill-in on the
-        /// spot. The handoff forwards that focus into the pane and, until it
-        /// lands there, draws the sidebar unfocused so Profiles never flashes.
-        /// It closes once focus arrives, or after half a second at most, so a
-        /// swap that keeps its focus can't swallow the user's own later move
-        /// to the sidebar. Not `private`: the Library pane's row calls it
-        /// (SettingsView+Library).
-        func beginContentManagementHandoff() {
-            contentManagementHandoff = true
-            sidebarFocusUnmask?.cancel()
-            sidebarFocusMasked = true
-            contentManagementHandoffTimeout?.cancel()
-            contentManagementHandoffTimeout = Task { @MainActor in
-                try? await Task.sleep(for: .milliseconds(500))
-                guard !Task.isCancelled else { return }
-                endContentManagementHandoff()
-            }
-        }
-
-        private func endContentManagementHandoff() {
-            contentManagementHandoffTimeout?.cancel()
-            contentManagementHandoffTimeout = nil
-            contentManagementHandoff = false
-            // Unmask once the rows' own focus has caught up: one focus
-            // animation's length (TVSettingsSidebarButtonStyle) is plenty.
-            sidebarFocusUnmask?.cancel()
-            sidebarFocusUnmask = Task { @MainActor in
-                try? await Task.sleep(for: .milliseconds(150))
-                guard !Task.isCancelled else { return }
-                sidebarFocusMasked = false
             }
         }
 
@@ -468,13 +522,18 @@ struct SettingsView: View {
                         if showingRecordingServer {
                             TVRecordingServerSettingsView(route: $recordingServerRoute)
                         } else {
-                            TVLiveTVSettingsPane(showingRecordingServer: $showingRecordingServer) { presentPaywall($0) }
+                            TVLiveTVSettingsPane(
+                                showingRecordingServer: $showingRecordingServer,
+                                drillInFocus: $drillInFocus
+                            ) { presentPaywall($0) }
                         }
                     case .sports:
                         TVSportsSettingsPane()
                     case .player:
                         if showingOpenSubtitles {
                             TVOpenSubtitlesIntegrationView()
+                        } else if showingSubtitleStyle {
+                            TVSubtitleStyleSettingsView()
                         } else if let selectedEngineOptions {
                             tvEngineOptionsDetail(for: selectedEngineOptions)
                         } else if showingEngines {
@@ -498,11 +557,12 @@ struct SettingsView: View {
                         EmptyView() // not offered on tvOS
                     }
                 }
-                .frame(maxWidth: TVSettingsMetrics.detailMaxWidth, alignment: .leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 48)
-                .padding(.vertical, 72)
+                // Lume Pro lays its benefits out in two columns across the
+                // whole pane.
+                .tvSettingsPaneContent(maxWidth: selectedCategory == .premium ? .infinity : TVSettingsMetrics.detailMaxWidth)
             }
+            // A fresh scroll position per category; sub-pages keep theirs.
+            .id(selectedCategory)
             .focusSection()
         }
 
@@ -516,6 +576,25 @@ struct SettingsView: View {
                 }
             }
         }
+    }
+
+    /// Where focus goes once Content Management has swapped the whole pane in
+    /// or out.
+    enum TVSettingsPaneHandoff {
+        case contentManagement
+        case drillIn(TVSettingsDrillIn)
+    }
+
+    /// A row that opens a sub-page in the Settings pane, focused again when
+    /// Menu backs out of it.
+    enum TVSettingsDrillIn: Hashable {
+        case playlist(UUID)
+        case contentManagement
+        case recordingServer
+        case audioLanguages, addLanguage
+        case subtitleStyle, openSubtitles
+        case engines
+        case engineOptions(PlayerEngineKind)
     }
 
 #endif
