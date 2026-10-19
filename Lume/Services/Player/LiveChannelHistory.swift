@@ -63,6 +63,14 @@ enum LiveChannelHistory {
         defaults.set(id, forKey: currentKey)
     }
 
+    /// The live channel `id` playing now, or last played — `nil` before any.
+    static func currentChannelId(
+        profileID: UUID? = ActiveProfileStore.current,
+        defaults: UserDefaults = .standard
+    ) -> String? {
+        defaults.string(forKey: key(currentKeyBase, profileID))
+    }
+
     /// The most-recently-watched live channel `id`s for the profile, current
     /// channel first. Ordering only — resolution into models is the caller's job
     /// so each channel can be matched to its owning playlist.
