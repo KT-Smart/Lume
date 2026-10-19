@@ -118,16 +118,28 @@ struct JellyfinMediaSourceTests {
         #expect(MediaSourceAutoPick.pick(from: options, context: plays)?.id == "a")
     }
 
-    @Test func `resuming reopens the remembered version while it is offered`() {
-        let options = [option("a"), option("b")]
+    @Test func `resuming asks again while the picker is on`() {
+        let options = [option("a", bingeGroup: "g1"), option("b", bingeGroup: "g2")]
         var context = MediaSourceAutoPick.Context(choosesBeforePlaying: true, isResuming: true, rememberedId: "b")
+        #expect(MediaSourceAutoPick.pick(from: options, context: context) == nil)
+        // Neither does the session's release group skip the question.
+        context.bingeGroup = "g2"
+        #expect(MediaSourceAutoPick.pick(from: options, context: context) == nil)
+        // From the start, a remembered pick doesn't skip it either.
+        context.isResuming = false
+        context.bingeGroup = nil
+        #expect(MediaSourceAutoPick.pick(from: options, context: context) == nil)
+        // A single version still plays.
+        context.isResuming = true
+        #expect(MediaSourceAutoPick.pick(from: [option("b")], context: context)?.id == "b")
+    }
+
+    @Test func `resuming reopens the remembered version while the picker is off`() {
+        let options = [option("a"), option("b")]
+        var context = MediaSourceAutoPick.Context(choosesBeforePlaying: false, isResuming: true, rememberedId: "b")
         #expect(MediaSourceAutoPick.pick(from: options, context: context)?.id == "b")
         context.rememberedId = "gone"
-        #expect(MediaSourceAutoPick.pick(from: options, context: context) == nil)
-        // From the start, a remembered pick doesn't skip the question.
-        context.rememberedId = "b"
-        context.isResuming = false
-        #expect(MediaSourceAutoPick.pick(from: options, context: context) == nil)
+        #expect(MediaSourceAutoPick.pick(from: options, context: context)?.id == "a")
     }
 
     @Test func `the next episode follows the session's release group`() {

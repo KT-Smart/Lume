@@ -43,11 +43,23 @@ final class PlayerSourceSession {
     /// The mid-playback picker, opened from the player's Sources control.
     var isPresentingSwitcher = false
 
+    /// The version last picked for this title, marked in the picker. Never
+    /// one the server no longer offers or that already failed this session.
+    var rememberedOptionId: String? {
+        guard let rememberedId, options.contains(where: { $0.id == rememberedId }),
+              !failedIds.contains(rememberedId)
+        else { return nil }
+        return rememberedId
+    }
+
     /// The stream the session resolved for, by `PlayableMedia.id`.
     private var mediaID: String?
     private var base: PlayableMedia?
     private var resolved: PlayableMedia?
     private var headers: [String: String]?
+    /// The pick remembered when the title opened, read before this session
+    /// remembers its own.
+    private var rememberedId: String?
     /// The release group last played this session, for the next episode.
     private var bingeGroup: String?
 
@@ -75,6 +87,7 @@ final class PlayerSourceSession {
         guard JellyfinSourceResolver.itemId(for: media) != nil else { return false }
         if mediaID != media.id {
             failedIds = []
+            rememberedId = MediaSourcePreferences.rememberedSourceId(for: media.contentRef)
         }
         mediaID = media.id
         base = media
@@ -106,7 +119,7 @@ final class PlayerSourceSession {
         let context = MediaSourceAutoPick.Context(
             choosesBeforePlaying: PlayerSettings.Playback.chooseSourceBeforePlaying,
             isResuming: media.startTime > 0,
-            rememberedId: MediaSourcePreferences.rememberedSourceId(for: media.contentRef),
+            rememberedId: rememberedId,
             bingeGroup: isEpisode ? bingeGroup : nil,
             failedIds: failedIds
         )
@@ -146,8 +159,8 @@ final class PlayerSourceSession {
         resolved = resolved?.resuming(at: position)
     }
 
-    /// Every play is remembered, auto-picked or not, so resuming the title
-    /// later reopens the version it was left on.
+    /// Every play is remembered, auto-picked or not, so the picker can mark
+    /// it next time, or resuming reopens it when the picker is off.
     private func play(_ option: MediaSourceOption, startTime: TimeInterval) {
         guard let base else { return }
         resolved = JellyfinSourceResolver.media(base, playing: option, headers: headers, startTime: startTime)
