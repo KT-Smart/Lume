@@ -53729,118 +53729,60 @@
         }
       }
     },
-    "Scrobble what you watch and surface your Trakt watchlist on Home." : {
+    "Scrobble what you watch to Trakt or Simkl, import your history and surface your watchlist on Home." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "سجّل ما تشاهده واعرض قائمة مشاهدة Trakt في الرئيسية."
+            "value" : "سجّل ما تشاهده في Trakt أو Simkl، واستورد سجلّك، واعرض قائمة مشاهدتك في الرئيسية."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Übertrage, was du ansiehst, und zeige deine Trakt-Merkliste auf der Startseite."
+            "value" : "Übertrage, was du ansiehst, an Trakt oder Simkl, importiere deinen Verlauf und zeige deine Watchlist auf der Startseite."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Registra lo que ves y muestra tu lista de seguimiento de Trakt en Inicio."
+            "value" : "Registra lo que ves en Trakt o Simkl, importa tu historial y muestra tu lista de seguimiento en Inicio."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scrobblez ce que vous regardez et affichez votre liste de suivi Trakt sur l’écran d’accueil."
+            "value" : "Scrobblez ce que vous regardez vers Trakt ou Simkl, importez votre historique et affichez votre liste de suivi sur l’écran d’accueil."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esegui lo scrobble di ciò che guardi e mostra la tua watchlist di Trakt nella Home."
+            "value" : "Esegui lo scrobble di ciò che guardi su Trakt o Simkl, importa la tua cronologia e mostra la tua watchlist nella Home."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "視聴した内容をスクロブルし、Traktのウォッチリストをホームに表示します。"
+            "value" : "視聴した内容をTraktまたはSimklにスクロブルし、履歴をインポートして、ウォッチリストをホームに表示します。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "시청 내역을 스크로블하고 홈에 Trakt 시청 목록을 표시하세요."
+            "value" : "시청 내역을 Trakt 또는 Simkl에 스크로블하고, 기록을 가져오며, 홈에 시청 목록을 표시하세요."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Faça scrobble do que você assiste e mostre sua lista do Trakt na Tela Inicial."
+            "value" : "Faça scrobble do que você assiste no Trakt ou no Simkl, importe seu histórico e mostre sua lista na Tela Inicial."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "记录您观看的内容，并在主页上展示您的Trakt待看列表。"
-          }
-        }
-      }
-    },
-    "Scrobble what you watch to Simkl, import your Simkl history and surface your Simkl watchlist on Home." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "سجّل ما تشاهده في Simkl، واستورد سجلّك من Simkl، واعرض قائمة مشاهدة Simkl في الرئيسية."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Übertrage, was du ansiehst, an Simkl, importiere deinen Simkl-Verlauf und zeige deine Simkl-Watchlist auf der Startseite."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Registra lo que ves en Simkl, importa tu historial de Simkl y muestra tu lista de seguimiento de Simkl en Inicio."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scrobblez ce que vous regardez vers Simkl, importez votre historique Simkl et affichez votre liste de suivi Simkl sur l’écran d’accueil."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esegui lo scrobble di ciò che guardi su Simkl, importa la tua cronologia di Simkl e mostra la tua watchlist di Simkl nella Home."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "視聴した内容をSimklにスクロブルし、Simklの履歴をインポートして、Simklのウォッチリストをホームに表示します。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "시청 내역을 Simkl에 스크로블하고, Simkl 기록을 가져오며, 홈에 Simkl 시청 목록을 표시하세요."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Faça scrobble do que você assiste no Simkl, importe seu histórico do Simkl e mostre sua lista do Simkl na Tela Inicial."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "将您观看的内容记录到Simkl，导入您的Simkl历史记录，并在主页上展示您的Simkl待看列表。"
+            "value" : "将您观看的内容记录到Trakt或Simkl，导入您的历史记录，并在主页上展示您的待看列表。"
           }
         }
       }
@@ -58544,64 +58486,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Simkl"
-          }
-        }
-      }
-    },
-    "Simkl Integration" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "التكامل مع Simkl"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Simkl-Integration"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Integración con Simkl"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Intégration Simkl"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Integrazione Simkl"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Simkl連携"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Simkl 연동"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Integração com o Simkl"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Simkl集成"
           }
         }
       }
@@ -70869,60 +70753,60 @@
         }
       }
     },
-    "Trakt Integration" : {
+    "Trakt & Simkl Sync" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "التكامل مع Trakt"
+            "value" : "مزامنة Trakt وSimkl"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trakt-Integration"
+            "value" : "Trakt- & Simkl-Sync"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Integración con Trakt"
+            "value" : "Sincronización con Trakt y Simkl"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Intégration Trakt"
+            "value" : "Synchro Trakt et Simkl"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Integrazione Trakt"
+            "value" : "Sincronizzazione Trakt e Simkl"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trakt連携"
+            "value" : "Trakt・Simkl同期"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trakt 연동"
+            "value" : "Trakt 및 Simkl 동기화"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Integração com o Trakt"
+            "value" : "Sincronização com Trakt e Simkl"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trakt集成"
+            "value" : "Trakt和Simkl同步"
           }
         }
       }
