@@ -302,7 +302,7 @@ struct AVPlayerEngineView: View {
                 clock: clock,
                 panelCloseToken: panelCloseToken,
                 onTogglePlay: { togglePlay() },
-                onResetHideTimer: { resetHideTimer() },
+                onResetHideTimer: { PlayerControlsAutoHide.menuClosed(); resetHideTimer() },
                 onSelectMedia: { onSelectMedia?($0) },
                 onPanelOpenChange: { setPanelOpen($0) },
                 onSwitchChannel: { switchLiveChannel($0) },
@@ -319,7 +319,7 @@ struct AVPlayerEngineView: View {
                 hideTask: $hideTask,
                 onClose: { closePlayer() },
                 onTogglePlay: { togglePlay() },
-                onResetHideTimer: { resetHideTimer() },
+                onResetHideTimer: { PlayerControlsAutoHide.menuClosed(); resetHideTimer() },
                 onScheduleHide: { scheduleHide() },
                 itemNeighbours: itemNeighbours,
                 onStepItem: { stepItem($0) }
@@ -441,6 +441,9 @@ struct AVPlayerEngineView: View {
         guard coordinator.isPlaying, !isPanelOpen, !PlayerControlsAutoHide.isSuppressed else { return }
         hideTask = Task { @MainActor in
             try? await Task.sleep(nanoseconds: UInt64(autoHideInterval * 1_000_000_000))
+            if await PlayerControlsAutoHide.waitWhileMenuOpen() {
+                try? await Task.sleep(nanoseconds: UInt64(autoHideInterval * 1_000_000_000))
+            }
             guard !Task.isCancelled, coordinator.isPlaying else { return }
             withAnimation(.easeInOut(duration: 0.2)) { isControlsVisible = false }
         }

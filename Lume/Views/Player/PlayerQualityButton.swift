@@ -52,6 +52,7 @@ struct PlayerQualityMenuItems: View {
             }
             .accessibilityAddTraits(isCurrent ? .isSelected : [])
         }
+        .holdsPlayerControls()
     }
 
     /// Provider quality tags ("4K", "FHD", "ᴴᴰ") are shown as written; only an
