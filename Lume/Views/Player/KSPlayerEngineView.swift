@@ -277,7 +277,7 @@ struct KSPlayerEngineView: View {
                         clock: clock,
                         panelCloseToken: panelCloseToken,
                         onTogglePlay: { togglePlay() },
-                        onResetHideTimer: { resetHideTimer() },
+                        onResetHideTimer: { PlayerControlsAutoHide.menuClosed(); resetHideTimer() },
                         onSelectMedia: { selectMedia($0) },
                         onPanelOpenChange: { setPanelOpen($0) },
                         onSwitchChannel: { switchLiveChannel($0) },

@@ -145,14 +145,10 @@ struct SportsChannelLabel: View {
     }
 }
 
-/// Pulls a quality tag out of a channel name — "DAZN 1 FHD", "Sky 4K UHD".
-/// Checks the most specific tokens first so "4K UHD" reports "4K".
+/// Pulls a quality tag out of a channel name — "Fieldcast 1 FHD", "Lume 4K UHD".
+/// Only the badges the picker has always shown; "1080p" or "8K" get none.
 nonisolated func sportsQualityBadge(from name: String) -> String? {
-    let haystack = name.uppercased()
-    for token in ["4K", "UHD", "FHD", "HD"] where haystack.contains(token) {
-        return token
-    }
-    return nil
+    ChannelQuality.badge(for: name).flatMap { ["4K", "UHD", "FHD", "HD"].contains($0) ? $0 : nil }
 }
 
 extension ResolvedChannel {

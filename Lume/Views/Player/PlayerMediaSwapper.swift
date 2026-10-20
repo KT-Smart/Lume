@@ -74,6 +74,13 @@ final class PlayerMediaSwapper {
         return true
     }
 
+    /// Runs `perform`, a swap to a stream the viewer picked directly (a
+    /// Quality menu row), unless the previous swap is still settling.
+    func swap(_ perform: () -> Void) {
+        guard accept() else { return }
+        perform()
+    }
+
     /// Whether a swap may start now. Recorded only for swaps that go through,
     /// so a press that resolves to nothing doesn't hold up the next one.
     private func accept(at now: Date = Date()) -> Bool {

@@ -72,6 +72,9 @@ extension KSPlayerEngineView {
         #endif
         hideTask = Task { @MainActor in
             try? await Task.sleep(nanoseconds: UInt64(autoHideInterval * 1_000_000_000))
+            if await PlayerControlsAutoHide.waitWhileMenuOpen() {
+                try? await Task.sleep(nanoseconds: UInt64(autoHideInterval * 1_000_000_000))
+            }
             #if os(tvOS)
                 guard !Task.isCancelled, engine.isPlaying else { return }
             #else
