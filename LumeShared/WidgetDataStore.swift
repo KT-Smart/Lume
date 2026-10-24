@@ -13,8 +13,9 @@ import Foundation
 /// the WidgetKit and Top Shelf extensions only read.
 nonisolated enum WidgetDataStore {
     /// Must match `com.apple.security.application-groups` in every target's
-    /// entitlements (app, LumeWidgets, LumeTopShelf).
-    static let appGroupID = "group.com.bilipp.lume"
+    /// entitlements (app, LumeWidgets, LumeTopShelf). Both come from
+    /// `LUME_APP_GROUP_ID` in `Config/Lume.xcconfig`, via each target's Info.plist.
+    static let appGroupID = Bundle.main.object(forInfoDictionaryKey: "LumeAppGroupIdentifier") as? String ?? "group.com.bilipp.lume"
 
     private static let snapshotFilename = "widget-snapshot.json"
 

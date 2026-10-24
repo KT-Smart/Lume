@@ -25,3 +25,6 @@ lefthook-local.yml
 .opencode/
 
 .xcodebuildmcp/
+
+# KT-Smart: per-developer signing overrides (see Config/Lume.xcconfig)
+Config/Lume.local.xcconfig

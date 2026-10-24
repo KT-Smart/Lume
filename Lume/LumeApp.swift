@@ -14,7 +14,8 @@ struct LumeApp: App {
     /// The CloudKit private-database container backing iCloud sync. Must match
     /// the id in `Lume.entitlements` and exist in the Apple Developer portal /
     /// CloudKit Console (schema deployed to Production before App Store release).
-    static let cloudKitContainerIdentifier = "iCloud.bilipp.Lume"
+    /// Comes from `LUME_ICLOUD_CONTAINER_ID` in `Config/Lume.xcconfig`, via Info.plist.
+    static let cloudKitContainerIdentifier = Bundle.main.object(forInfoDictionaryKey: "LumeCloudKitContainerIdentifier") as? String ?? "iCloud.bilipp.Lume"
 
     /// The local-only catalog store. The app's environment container — every
     /// browse `@Query` binds to it, so CloudKit's churn (which only touches the

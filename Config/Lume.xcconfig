@@ -1,0 +1,36 @@
+// Lume.xcconfig
+//
+// KT-Smart signing & identifier settings for the kt-custom fork of Lume.
+// Applied to every build configuration (Debug, Release, Sideload, Benchmark)
+// at project level, so every target picks these up.
+//
+// Upstream (bilipp/Lume) hardcodes its own team and identifiers in the
+// pbxproj and entitlements. On this branch those values are replaced by the
+// variables below, so changing team or bundle ID only ever touches this file.
+//
+// Per-developer overrides (e.g. a personal team for device builds) go in
+// Config/Lume.local.xcconfig, which is gitignored and included at the end.
+//
+// Don't pick a team in Xcode's Signing & Capabilities tab: Xcode writes it
+// back into the pbxproj as a literal, which overrides this file.
+
+// Apple Developer Team ID (10 characters, from developer.apple.com/account).
+// Empty = simulator-only builds.
+DEVELOPMENT_TEAM =
+
+// Reverse-DNS prefix all bundle identifiers are built from.
+LUME_BUNDLE_ID_PREFIX = eu.iqontrol
+
+// Main app bundle ID. Extensions append to it (.LumeWidgets, .topshelf),
+// test bundles use the prefix (.LumeTests, .LumeUITests, .LumePerformanceTests).
+LUME_APP_BUNDLE_ID = $(LUME_BUNDLE_ID_PREFIX).lume
+
+// App Group shared by the app, LumeWidgets and LumeTopShelf. Used in the
+// entitlements and, via Info.plist, by WidgetDataStore.appGroupID.
+LUME_APP_GROUP_ID = group.$(LUME_APP_BUNDLE_ID)
+
+// CloudKit container for iCloud sync. Used in the entitlements and, via
+// Info.plist, by LumeApp.cloudKitContainerIdentifier.
+LUME_ICLOUD_CONTAINER_ID = iCloud.$(LUME_APP_BUNDLE_ID)
+
+#include? "Lume.local.xcconfig"
