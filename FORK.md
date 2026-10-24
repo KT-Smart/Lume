@@ -58,6 +58,7 @@ Keep this list current — it is what to check when an upstream merge conflicts.
   uses the variables above. If upstream adds a **new target**, it arrives with
   their team and bundle ID hardcoded — delete its `DEVELOPMENT_TEAM` lines and
   switch its bundle ID to `$(LUME_APP_BUNDLE_ID).<suffix>`.
+- **`ExportOptions.plist`** carries our team ID (a plist can't read the xcconfig).
 - **Entitlements** (`Lume/*.entitlements`, `LumeWidgets/`, `LumeTopShelf/`) use
   `$(LUME_APP_GROUP_ID)` and `$(LUME_ICLOUD_CONTAINER_ID)`.
 - **Info.plists** (`Lume/`, `LumeWidgets/`, `LumeTopShelf/`) carry
@@ -84,8 +85,3 @@ TestFlight, never the sideload workflow.
   the first TestFlight build, and after every model change that touches the
   CloudKit store, deploy the schema in the CloudKit Console (container ▸
   Schema ▸ Deploy Schema Changes). Otherwise sync fails silently for testers.
-
-## Not changed (yet)
-
-- `ExportOptions.plist` still has upstream's team ID — only relevant for a
-  signed `xcodebuild -exportArchive`.
