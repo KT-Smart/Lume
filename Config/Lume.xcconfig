@@ -18,12 +18,9 @@
 // Empty = simulator-only builds.
 DEVELOPMENT_TEAM = 7GDKU3HWGA
 
-// Reverse-DNS prefix all bundle identifiers are built from.
-LUME_BUNDLE_ID_PREFIX = eu.lume.lite
-
-// Main app bundle ID. Extensions append to it (.LumeWidgets, .topshelf),
-// test bundles use the prefix (.LumeTests, .LumeUITests, .LumePerformanceTests).
-LUME_APP_BUNDLE_ID = $(LUME_BUNDLE_ID_PREFIX).lume
+// Main app bundle ID. Every other target appends a suffix to it:
+// .widgets, .topshelf, .tests, .uitests, .performancetests.
+LUME_APP_BUNDLE_ID = eu.lume.lite
 
 // App Group shared by the app, LumeWidgets and LumeTopShelf. Used in the
 // entitlements and, via Info.plist, by WidgetDataStore.appGroupID.

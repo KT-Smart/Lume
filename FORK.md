@@ -36,8 +36,7 @@ All team and identifier settings live in [`Config/Lume.xcconfig`](Config/Lume.xc
 | Setting | Used for |
 |---|---|
 | `DEVELOPMENT_TEAM` | Code signing for every target |
-| `LUME_BUNDLE_ID_PREFIX` | Prefix for every bundle ID |
-| `LUME_APP_BUNDLE_ID` | App bundle ID; extensions append `.LumeWidgets` / `.topshelf` |
+| `LUME_APP_BUNDLE_ID` | App bundle ID; other targets append `.widgets`, `.topshelf`, `.tests`, `.uitests`, `.performancetests` |
 | `LUME_APP_GROUP_ID` | App Group shared by the app and its extensions |
 | `LUME_ICLOUD_CONTAINER_ID` | CloudKit container for iCloud sync |
 
