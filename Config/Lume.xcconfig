@@ -33,4 +33,10 @@ LUME_APP_GROUP_ID = group.$(LUME_APP_BUNDLE_ID)
 // Info.plist, by LumeApp.cloudKitContainerIdentifier.
 LUME_ICLOUD_CONTAINER_ID = iCloud.$(LUME_APP_BUNDLE_ID)
 
+// Unlocks every Lume Pro feature in Release builds and skips StoreKit
+// entirely (see PremiumManager). Debug builds keep upstream's behaviour:
+// Premium is on by default, with a Settings ▸ Developer toggle to preview
+// the free tier. Remove ALL_FEATURES_UNLOCKED to restore the paywall.
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) ALL_FEATURES_UNLOCKED
+
 #include? "Lume.local.xcconfig"

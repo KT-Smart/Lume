@@ -64,12 +64,16 @@ Keep this list current — it is what to check when an upstream merge conflicts.
   `LumeAppGroupIdentifier` (and the app's also `LumeCloudKitContainerIdentifier`),
   which `WidgetDataStore.appGroupID` and `LumeApp.cloudKitContainerIdentifier`
   read at runtime.
+- **All Pro features unlocked.** `Config/Lume.xcconfig` adds the
+  `ALL_FEATURES_UNLOCKED` compilation condition; `PremiumManager.isPremium`
+  returns `true` under it and StoreKit is never started. Unlike upstream's
+  `SIDE_LOAD` condition it leaves iCloud sync and everything else alone.
 
 ## Not changed (yet)
 
 - `ExportOptions.plist` still has upstream's team ID — only relevant for a
   signed `xcodebuild -exportArchive`.
-- StoreKit product IDs (`Lume.storekit`, `PremiumManager`) are upstream's. Before
-  shipping in-app purchases, create our own in App Store Connect.
+- The "Lume Pro" screen in Settings still exists; with everything unlocked it
+  shows "All features unlocked", as on upstream's sideload builds.
 - The CloudKit schema must be deployed to Production in our own container
   before an App Store release (see `CLAUDE.md`).

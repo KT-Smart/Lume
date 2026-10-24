@@ -94,16 +94,21 @@ final class PremiumManager {
         }
     #else
         /// App Store build: Premium iff the user owns the lifetime unlock or has an
-        /// active subscription.
+        /// active subscription. `ALL_FEATURES_UNLOCKED` (set in Config/Lume.xcconfig)
+        /// unlocks everything like a sideload build, but keeps CloudKit sync.
         var isPremium: Bool {
-            !purchasedProductIDs.isEmpty
+            #if ALL_FEATURES_UNLOCKED
+                true
+            #else
+                !purchasedProductIDs.isEmpty
+            #endif
         }
     #endif
 
     private var transactionListener: Task<Void, Never>?
 
     private init() {
-        #if !SIDE_LOAD
+        #if !SIDE_LOAD && !ALL_FEATURES_UNLOCKED
             // Listen for renewals, refunds, Ask-to-Buy approvals and purchases made
             // on other devices for the whole app lifetime.
             transactionListener = Task { [weak self] in
