@@ -1151,7 +1151,6 @@
 				CURRENT_PROJECT_VERSION = 33;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LumeWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Lume;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
@@ -1182,7 +1181,6 @@
 				CURRENT_PROJECT_VERSION = 33;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LumeWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Lume;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
@@ -1213,7 +1211,6 @@
 				CURRENT_PROJECT_VERSION = 33;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LumeWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Lume;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
@@ -1244,7 +1241,6 @@
 				CURRENT_PROJECT_VERSION = 33;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LumeTopShelf/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Lume;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
@@ -1274,7 +1270,6 @@
 				CURRENT_PROJECT_VERSION = 33;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LumeTopShelf/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Lume;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
@@ -1304,7 +1299,6 @@
 				CURRENT_PROJECT_VERSION = 33;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LumeTopShelf/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Lume;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
@@ -1334,7 +1328,6 @@
 				CURRENT_PROJECT_VERSION = 33;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LumeTopShelf/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Lume;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
@@ -1625,7 +1618,6 @@
 				CURRENT_PROJECT_VERSION = 33;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LumeWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Lume;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",

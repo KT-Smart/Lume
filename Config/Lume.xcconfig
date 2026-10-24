@@ -18,6 +18,10 @@
 // Empty = simulator-only builds.
 DEVELOPMENT_TEAM = 7GDKU3HWGA
 
+// Name under the app icon (home screen, Dock, Apple TV) and in the widget
+// gallery / Top Shelf. Target, scheme, module and binary all stay "Lume".
+INFOPLIST_KEY_CFBundleDisplayName = Lume Lite
+
 // Main app bundle ID. Every other target appends a suffix to it:
 // .widgets, .topshelf, .tests, .uitests, .performancetests.
 LUME_APP_BUNDLE_ID = eu.lume.lite

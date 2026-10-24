@@ -36,6 +36,7 @@ All team and identifier settings live in [`Config/Lume.xcconfig`](Config/Lume.xc
 | Setting | Used for |
 |---|---|
 | `DEVELOPMENT_TEAM` | Code signing for every target |
+| `INFOPLIST_KEY_CFBundleDisplayName` | App name under the icon ("Lume Lite") for the app, widgets and Top Shelf |
 | `LUME_APP_BUNDLE_ID` | App bundle ID; other targets append `.widgets`, `.topshelf`, `.tests`, `.uitests`, `.performancetests` |
 | `LUME_APP_GROUP_ID` | App Group shared by the app and its extensions |
 | `LUME_ICLOUD_CONTAINER_ID` | CloudKit container for iCloud sync |
@@ -53,8 +54,8 @@ Keep this list current — it is what to check when an upstream merge conflicts.
 
 - **Signing via xcconfig.** `Config/Lume.xcconfig` is the base configuration of
   every project-level build configuration. In `Lume.xcodeproj/project.pbxproj`
-  every `DEVELOPMENT_TEAM` line is removed and every `PRODUCT_BUNDLE_IDENTIFIER`
-  uses the variables above. If upstream adds a **new target**, it arrives with
+  every `DEVELOPMENT_TEAM` and `INFOPLIST_KEY_CFBundleDisplayName` line is
+  removed and every `PRODUCT_BUNDLE_IDENTIFIER` uses the variables above. If upstream adds a **new target**, it arrives with
   their team and bundle ID hardcoded — delete its `DEVELOPMENT_TEAM` lines and
   switch its bundle ID to `$(LUME_APP_BUNDLE_ID).<suffix>`.
 - **`ExportOptions.plist`** carries our team ID (a plist can't read the xcconfig).
