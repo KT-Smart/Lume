@@ -79,6 +79,13 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
             #else
                 false
             #endif
+        case .premium:
+            // KT fork: everything is unlocked, so there's no plan to show.
+            #if ALL_FEATURES_UNLOCKED
+                false
+            #else
+                true
+            #endif
         default:
             true
         }

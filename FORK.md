@@ -68,12 +68,24 @@ Keep this list current — it is what to check when an upstream merge conflicts.
   `ALL_FEATURES_UNLOCKED` compilation condition; `PremiumManager.isPremium`
   returns `true` under it and StoreKit is never started. Unlike upstream's
   `SIDE_LOAD` condition it leaves iCloud sync and everything else alone.
+- **No "Lume Pro" in Settings.** `SettingsCategory.isAvailableOnPlatform` hides
+  the `.premium` category under `ALL_FEATURES_UNLOCKED` (iOS, macOS and tvOS).
+
+## iCloud sync
+
+Sync works in every build signed with our team — Debug runs from Xcode,
+TestFlight and App Store. It does **not** work in the Sideload configuration
+(unsigned; `SIDE_LOAD` turns CloudKit off), so test builds go through Xcode or
+TestFlight, never the sideload workflow.
+
+- **Xcode builds** use the CloudKit **Development** environment. Running one
+  with our team creates the container and its schema automatically.
+- **TestFlight and App Store builds** use the **Production** environment. Before
+  the first TestFlight build, and after every model change that touches the
+  CloudKit store, deploy the schema in the CloudKit Console (container ▸
+  Schema ▸ Deploy Schema Changes). Otherwise sync fails silently for testers.
 
 ## Not changed (yet)
 
 - `ExportOptions.plist` still has upstream's team ID — only relevant for a
   signed `xcodebuild -exportArchive`.
-- The "Lume Pro" screen in Settings still exists; with everything unlocked it
-  shows "All features unlocked", as on upstream's sideload builds.
-- The CloudKit schema must be deployed to Production in our own container
-  before an App Store release (see `CLAUDE.md`).
